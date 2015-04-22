@@ -7,7 +7,7 @@ Fully customisable.
 Demo
 ----
 
-![alt tag]()
+![alt tag](https://raw.githubusercontent.com/yemeksepeti/YSSegmentedControl/master/demo.gif)
 
 Install
 -------
