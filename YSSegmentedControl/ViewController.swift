@@ -8,18 +8,42 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, YSSegmentedControlDelegate {
 
+    // MARK: Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        view.backgroundColor = UIColor (white: 240.0/255.0, alpha: 1)
+        navigationItem.title = "Demo"
+        
+        let segmented = YSSegmentedControl(
+            frame: CGRect(
+                x: 0,
+                y: 64,
+                width: view.frame.size.width,
+                height: 44),
+            titles: [
+                "First",
+                "Second",
+                "Third"
+            ])
+        
+        segmented.delegate = self
+        view.addSubview(segmented)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    
+    // MARK: YSSegmentedControlDelegate
+    
+    func segmentedControlWillPressItemAtIndex(segmentedControl: YSSegmentedControl, index: Int) {
+        println ("segmented will press \(index)")
     }
-
+    
+    func segmentedControlDidPressedItemAtIndex(segmentedControl: YSSegmentedControl, index: Int) {
+        println ("segmented did pressed \(index)")
+    }
 
 }
 

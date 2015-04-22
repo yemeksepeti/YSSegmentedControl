@@ -13,6 +13,7 @@
 		B2A0ED141AE790290035992E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2A0ED131AE790290035992E /* Images.xcassets */; };
 		B2A0ED171AE790290035992E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B2A0ED151AE790290035992E /* LaunchScreen.xib */; };
 		B2A0ED231AE790290035992E /* YSSegmentedControlTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0ED221AE790290035992E /* YSSegmentedControlTests.swift */; };
+		B2A0ED2E1AE790470035992E /* YSSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0ED2D1AE790470035992E /* YSSegmentedControl.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +37,7 @@
 		B2A0ED1C1AE790290035992E /* YSSegmentedControlTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = YSSegmentedControlTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2A0ED211AE790290035992E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2A0ED221AE790290035992E /* YSSegmentedControlTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YSSegmentedControlTests.swift; sourceTree = "<group>"; };
+		B2A0ED2D1AE790470035992E /* YSSegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YSSegmentedControl.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,11 +79,8 @@
 		B2A0ED091AE790290035992E /* YSSegmentedControl */ = {
 			isa = PBXGroup;
 			children = (
-				B2A0ED0C1AE790290035992E /* AppDelegate.swift */,
+				B2A0ED2C1AE790470035992E /* YSSegmentedControl */,
 				B2A0ED0E1AE790290035992E /* ViewController.swift */,
-				B2A0ED101AE790290035992E /* Main.storyboard */,
-				B2A0ED131AE790290035992E /* Images.xcassets */,
-				B2A0ED151AE790290035992E /* LaunchScreen.xib */,
 				B2A0ED0A1AE790290035992E /* Supporting Files */,
 			);
 			path = YSSegmentedControl;
@@ -90,6 +89,10 @@
 		B2A0ED0A1AE790290035992E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				B2A0ED0C1AE790290035992E /* AppDelegate.swift */,
+				B2A0ED101AE790290035992E /* Main.storyboard */,
+				B2A0ED131AE790290035992E /* Images.xcassets */,
+				B2A0ED151AE790290035992E /* LaunchScreen.xib */,
 				B2A0ED0B1AE790290035992E /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -110,6 +113,14 @@
 				B2A0ED211AE790290035992E /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B2A0ED2C1AE790470035992E /* YSSegmentedControl */ = {
+			isa = PBXGroup;
+			children = (
+				B2A0ED2D1AE790470035992E /* YSSegmentedControl.swift */,
+			);
+			path = YSSegmentedControl;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -214,6 +225,7 @@
 			files = (
 				B2A0ED0F1AE790290035992E /* ViewController.swift in Sources */,
 				B2A0ED0D1AE790290035992E /* AppDelegate.swift in Sources */,
+				B2A0ED2E1AE790470035992E /* YSSegmentedControl.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
