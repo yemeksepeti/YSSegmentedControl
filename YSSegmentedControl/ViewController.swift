@@ -28,9 +28,12 @@ class ViewController: UIViewController, YSSegmentedControlDelegate {
                 "First",
                 "Second",
                 "Third"
-            ])
+            ],
+            action: {
+                control, index in
+                println ("segmented did pressed \(index)")
+            })
         
-        segmented.delegate = self
         view.addSubview(segmented)
     }
     

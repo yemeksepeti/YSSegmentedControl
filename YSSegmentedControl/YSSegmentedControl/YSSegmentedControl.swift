@@ -8,6 +8,8 @@
 
 import UIKit
 
+// MARK: - Appearance
+
 struct YSSegmentedControlAppearance {
     
     var backgroundColor: UIColor
@@ -27,24 +29,23 @@ struct YSSegmentedControlAppearance {
 }
 
 
-protocol YSSegmentedControlItemDelegate {
-    func segmentedControlItemWillPress (segmentedControlItem: YSSegmentedControlItem)
-    func segmentedControlItemDidPressed (segmentedControlItem: YSSegmentedControlItem)
-}
+// MARK: - Control Item
+
+typealias YSSegmentedControlItemAction = (item: YSSegmentedControlItem) -> Void
 
 class YSSegmentedControlItem: UIControl {
     
-    
     // MARK: Properties
     
-    var delegate: YSSegmentedControlItemDelegate?
+    var action: YSSegmentedControlItemAction?
     var label: UILabel!
     
     
     // MARK: Init
     
-    init (frame: CGRect, text: String, appearance: YSSegmentedControlAppearance) {
+    init (frame: CGRect, text: String, appearance: YSSegmentedControlAppearance, action: YSSegmentedControlItemAction?) {
         super.init(frame: frame)
+        self.action = action
         
         label = UILabel(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
         label.textColor = appearance.textColor
@@ -62,26 +63,27 @@ class YSSegmentedControlItem: UIControl {
     
     // MARK: Events
     
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
-        delegate?.segmentedControlItemWillPress(self)
-    }
-    
     override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
-        delegate?.segmentedControlItemDidPressed(self)
+        action?(item: self)
     }
 }
 
 
-protocol YSSegmentedControlDelegate {
-    func segmentedControlWillPressItemAtIndex (segmentedControl: YSSegmentedControl, index: Int)
-    func segmentedControlDidPressedItemAtIndex (segmentedControl: YSSegmentedControl, index: Int)
+// MARK: - Control
+
+@objc protocol YSSegmentedControlDelegate {
+    optional func segmentedControlWillPressItemAtIndex (segmentedControl: YSSegmentedControl, index: Int)
+    optional func segmentedControlDidPressedItemAtIndex (segmentedControl: YSSegmentedControl, index: Int)
 }
 
-class YSSegmentedControl: UIView, YSSegmentedControlItemDelegate {
+typealias YSSegmentedControlAction = (segmentedControl: YSSegmentedControl, index: Int) -> Void
+
+class YSSegmentedControl: UIView {
     
     // MARK: Properties
     
-    var delegate: YSSegmentedControlDelegate?
+    weak var delegate: YSSegmentedControlDelegate?
+    var action: YSSegmentedControlAction?
     
     var appearance: YSSegmentedControlAppearance! {
         didSet {
@@ -99,10 +101,20 @@ class YSSegmentedControl: UIView, YSSegmentedControlItemDelegate {
     
     init (frame: CGRect, titles: [String]) {
         super.init (frame: frame)
+        commonInit(titles)
+    }
+    
+    init (frame: CGRect, titles: [String], action: YSSegmentedControlAction?) {
+        super.init (frame: frame)
+        self.action = action
+        commonInit(titles)
+    }
+
+    func commonInit (titles: [String]) {
         self.titles = titles
         defaultAppearance()
     }
-
+    
     required init (coder aDecoder: NSCoder) {
         super.init (coder: aDecoder)
     }
@@ -137,8 +149,14 @@ class YSSegmentedControl: UIView, YSSegmentedControlItemDelegate {
                     width: width,
                     height: frame.size.height),
                 text: title,
-                appearance: appearance)
-            item.delegate = self
+                appearance: appearance,
+                action: {
+                    segmentedControlItem in
+                    
+                    let index = find(self.items, segmentedControlItem)!
+                    self.selectItemAtIndex(index)
+                    self.action?(segmentedControl: self, index: index)
+                })
             
             addSubview(item)
             items.append(item)
@@ -222,19 +240,4 @@ class YSSegmentedControl: UIView, YSSegmentedControlItemDelegate {
             completion: nil)
     }
     
-    
-    // MARK: YSSegmentedControlItemDelegate
-    
-    func segmentedControlItemWillPress (segmentedControlItem: YSSegmentedControlItem) {
-        let index = find(items, segmentedControlItem)!
-        delegate?.segmentedControlWillPressItemAtIndex(self, index: index)
-    }
-    
-    func segmentedControlItemDidPressed (segmentedControlItem: YSSegmentedControlItem) {
-        let index = find(items, segmentedControlItem)!
-        
-        selectItemAtIndex(index)
-        delegate?.segmentedControlDidPressedItemAtIndex(self, index: index)
-        
-    }
 }

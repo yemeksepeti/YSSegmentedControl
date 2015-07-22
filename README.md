@@ -23,20 +23,44 @@ coming soon
 Usage
 -----
 
-Create `YSSegmentedControl` with frame and titles.
+Create `YSSegmentedControl` with frame and titles.  
+You can either use delegation or callback initilization
+
+##### With callback
 
 ``` swift
-        let segmented = YSSegmentedControl(
-            frame: CGRect(
-                x: 0,
-                y: 64,
-                width: view.frame.size.width,
-                height: 44),
-            titles: [
-                "First",
-                "Second",
-                "Third"
-            ])
+    let segmented = YSSegmentedControl(
+        frame: CGRect(
+            x: 0,
+            y: 64,
+            width: view.frame.size.width,
+            height: 44),
+        titles: [
+            "First",
+            "Second",
+            "Third"
+        ],
+        action: {
+            control, index in
+            println ("segmented did pressed \(index)")
+        })
+
+```
+
+#### With delegation
+
+``` swift
+    let segmented = YSSegmentedControl(
+        frame: CGRect(
+            x: 0,
+            y: 64,
+            width: view.frame.size.width,
+            height: 44),
+        titles: [
+            "First",
+            "Second",
+            "Third"
+        ])
 ```
 
 Setup the delegate and you are ready to go !
@@ -48,10 +72,11 @@ Setup the delegate and you are ready to go !
 ###YSSegmentedControlDelegate
 
 ``` swift
-	protocol YSSegmentedControlDelegate {
-	    func segmentedControlWillPressItemAtIndex (segmentedControl: YSSegmentedControl, index: Int)
-	    func segmentedControlDidPressedItemAtIndex (segmentedControl: YSSegmentedControl, index: Int)
-	}
+@objc protocol YSSegmentedControlDelegate {
+    optional func segmentedControlWillPressItemAtIndex (segmentedControl: YSSegmentedControl, index: Int)
+    optional func segmentedControlDidPressedItemAtIndex (segmentedControl: YSSegmentedControl, index: Int)
+}
+
 ```
 
 ### YSSegmentedControlAppearance
