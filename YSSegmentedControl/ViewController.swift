@@ -31,7 +31,7 @@ class ViewController: UIViewController, YSSegmentedControlDelegate {
             ],
             action: {
                 control, index in
-                println ("segmented did pressed \(index)")
+                print ("segmented did pressed \(index)")
             })
         
         view.addSubview(segmented)
@@ -41,11 +41,11 @@ class ViewController: UIViewController, YSSegmentedControlDelegate {
     // MARK: YSSegmentedControlDelegate
     
     func segmentedControlWillPressItemAtIndex(segmentedControl: YSSegmentedControl, index: Int) {
-        println ("segmented will press \(index)")
+        print ("segmented will press \(index)")
     }
     
     func segmentedControlDidPressedItemAtIndex(segmentedControl: YSSegmentedControl, index: Int) {
-        println ("segmented did pressed \(index)")
+        print ("segmented did pressed \(index)")
     }
 
 }

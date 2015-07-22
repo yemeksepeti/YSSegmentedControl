@@ -63,7 +63,7 @@ class YSSegmentedControlItem: UIControl {
     
     // MARK: Events
     
-    override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         action?(item: self)
     }
 }
@@ -125,7 +125,7 @@ class YSSegmentedControl: UIView {
     func reset () {
 
         for sub in subviews {
-            let v = sub as! UIView
+            let v = sub as UIView
             v.removeFromSuperview()
         }
         
@@ -153,7 +153,7 @@ class YSSegmentedControl: UIView {
                 action: {
                     segmentedControlItem in
                     
-                    let index = find(self.items, segmentedControlItem)!
+                    let index = self.items.indexOf(segmentedControlItem)!
                     self.selectItemAtIndex(index)
                     self.action?(segmentedControl: self, index: index)
                 })
@@ -225,14 +225,14 @@ class YSSegmentedControl: UIView {
     
     func moveSelectorAtIndex (index: Int) {
         
-        var width = frame.size.width / CGFloat(items.count)
-        var target = width * CGFloat(index)
+        let width = frame.size.width / CGFloat(items.count)
+        let target = width * CGFloat(index)
         
         UIView.animateWithDuration(0.3,
             delay: 0,
             usingSpringWithDamping: 1,
             initialSpringVelocity: 0,
-            options: nil,
+            options: [],
             animations: {
                 [unowned self] in
                 self.selector.frame.origin.x = target
