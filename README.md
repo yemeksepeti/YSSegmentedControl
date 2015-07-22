@@ -12,7 +12,7 @@ Demo
 Install
 -------
 
-#### Manual
+##### Manual
 
 Copy & paste `YSSegmentedControl.swift` in your project
 
@@ -47,7 +47,7 @@ You can either use delegation or callback initilization
 
 ```
 
-#### With delegation
+##### With delegation
 
 ``` swift
     let segmented = YSSegmentedControl(
@@ -69,7 +69,7 @@ Setup the delegate and you are ready to go !
 	segmented.delegate = self
 ```
 
-###YSSegmentedControlDelegate
+### YSSegmentedControlDelegate
 
 ``` swift
 @objc protocol YSSegmentedControlDelegate {
