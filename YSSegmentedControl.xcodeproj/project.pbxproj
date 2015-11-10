@@ -167,6 +167,8 @@
 		B2A0ECFF1AE790280035992E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0710;
+				LastSwiftUpdateCheck = 0710;
 				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = "Cem Olcay";
 				TargetAttributes = {
@@ -423,6 +425,7 @@
 				B2A0ED281AE790290035992E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B2A0ED291AE790290035992E /* Build configuration list for PBXNativeTarget "YSSegmentedControlTests" */ = {
 			isa = XCConfigurationList;
@@ -431,6 +434,7 @@
 				B2A0ED2B1AE790290035992E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

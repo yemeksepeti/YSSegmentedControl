@@ -14,7 +14,6 @@ class ViewController: UIViewController, YSSegmentedControlDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         view.backgroundColor = UIColor (white: 240.0/255.0, alpha: 1)
         navigationItem.title = "Demo"
         
@@ -31,21 +30,20 @@ class ViewController: UIViewController, YSSegmentedControlDelegate {
             ],
             action: {
                 control, index in
-                println ("segmented did pressed \(index)")
+                print ("segmented did pressed \(index)")
             })
-        
+        segmented.delegate = self
         view.addSubview(segmented)
     }
-    
     
     // MARK: YSSegmentedControlDelegate
     
     func segmentedControlWillPressItemAtIndex(segmentedControl: YSSegmentedControl, index: Int) {
-        println ("segmented will press \(index)")
+        print ("[Delegate] segmented will press \(index)")
     }
     
     func segmentedControlDidPressedItemAtIndex(segmentedControl: YSSegmentedControl, index: Int) {
-        println ("segmented did pressed \(index)")
+        print ("[Delegate] segmented did pressed \(index)")
     }
 
 }
