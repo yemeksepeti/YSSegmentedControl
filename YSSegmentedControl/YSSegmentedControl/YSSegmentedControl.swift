@@ -80,7 +80,7 @@ class YSSegmentedControlItem: UIControl {
 
 typealias YSSegmentedControlAction = (segmentedControl: YSSegmentedControl, index: Int) -> Void
 
-class YSSegmentedControl: UIView {
+public class YSSegmentedControl: UIView {
     
     // MARK: Properties
     
@@ -106,13 +106,13 @@ class YSSegmentedControl: UIView {
         defaultAppearance()
     }
 
-    required init? (coder aDecoder: NSCoder) {
+    required public init? (coder aDecoder: NSCoder) {
         super.init (coder: aDecoder)
     }
     
     // MARK: Draw
     
-    func reset () {
+    private func reset () {
         for sub in subviews {
             let v = sub 
             v.removeFromSuperview()
@@ -120,7 +120,7 @@ class YSSegmentedControl: UIView {
         items = []
     }
     
-    func draw () {
+    private func draw () {
         reset()
         backgroundColor = appearance.backgroundColor
         let width = frame.size.width / CGFloat(titles.count)
@@ -170,7 +170,7 @@ class YSSegmentedControl: UIView {
         selectItemAtIndex(0)
     }
     
-    func defaultAppearance () {
+    private func defaultAppearance () {
         appearance = YSSegmentedControlAppearance(
             backgroundColor: UIColor.clearColor(),
             selectedBackgroundColor: UIColor.clearColor(),
@@ -186,7 +186,7 @@ class YSSegmentedControl: UIView {
     
     // MARK: Select
     
-    func selectItemAtIndex (index: Int) {
+    private func selectItemAtIndex (index: Int) {
         moveSelectorAtIndex(index)
         for item in items {
             if item == items[index] {
@@ -201,7 +201,7 @@ class YSSegmentedControl: UIView {
         }
     }
     
-    func moveSelectorAtIndex (index: Int) {
+    private func moveSelectorAtIndex (index: Int) {
         let width = frame.size.width / CGFloat(items.count)
         let target = width * CGFloat(index)
         UIView.animateWithDuration(0.3,
