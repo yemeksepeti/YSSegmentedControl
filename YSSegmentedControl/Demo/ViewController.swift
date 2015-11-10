@@ -45,6 +45,5 @@ class ViewController: UIViewController, YSSegmentedControlDelegate {
     func segmentedControlDidPressedItemAtIndex(segmentedControl: YSSegmentedControl, index: Int) {
         print ("[Delegate] segmented did pressed \(index)")
     }
-
 }
 
