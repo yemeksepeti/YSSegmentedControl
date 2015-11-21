@@ -21,6 +21,7 @@ public struct YSSegmentedControlAppearance {
     public var selectorColor: UIColor
     public var bottomLineHeight: CGFloat
     public var selectorHeight: CGFloat
+    public var labelTopPadding: CGFloat
     
 }
 
@@ -130,9 +131,9 @@ public class YSSegmentedControl: UIView {
             let item = YSSegmentedControlItem(
                 frame: CGRect(
                     x: currentX,
-                    y: 0,
+                    y: appearance.labelTopPadding,
                     width: width,
-                    height: frame.size.height),
+                    height: frame.size.height - appearance.labelTopPadding),
                 text: title,
                 appearance: appearance,
                 willPress: { segmentedControlItem in
@@ -182,7 +183,8 @@ public class YSSegmentedControl: UIView {
             bottomLineColor: UIColor.blackColor(),
             selectorColor: UIColor.blackColor(),
             bottomLineHeight: 0.5,
-            selectorHeight: 2)
+            selectorHeight: 2,
+            labelTopPadding: 0)
     }
     
     // MARK: Select
