@@ -75,7 +75,7 @@ class YSSegmentedControlItem: UIControl {
 
 // MARK: - Control
 
-@objc protocol YSSegmentedControlDelegate {
+@objc public protocol YSSegmentedControlDelegate {
     optional func segmentedControlWillPressItemAtIndex (segmentedControl: YSSegmentedControl, index: Int)
     optional func segmentedControlDidPressedItemAtIndex (segmentedControl: YSSegmentedControl, index: Int)
 }
