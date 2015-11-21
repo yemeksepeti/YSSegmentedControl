@@ -10,17 +10,18 @@ import UIKit
 
 // MARK: - Appearance
 
-struct YSSegmentedControlAppearance {
-    var backgroundColor: UIColor
-    var selectedBackgroundColor: UIColor
-    var textColor: UIColor
-    var font: UIFont
-    var selectedTextColor: UIColor
-    var selectedFont: UIFont
-    var bottomLineColor: UIColor
-    var selectorColor: UIColor
-    var bottomLineHeight: CGFloat
-    var selectorHeight: CGFloat
+public struct YSSegmentedControlAppearance {
+    public var backgroundColor: UIColor
+    public var selectedBackgroundColor: UIColor
+    public var textColor: UIColor
+    public var font: UIFont
+    public var selectedTextColor: UIColor
+    public var selectedFont: UIFont
+    public var bottomLineColor: UIColor
+    public var selectorColor: UIColor
+    public var bottomLineHeight: CGFloat
+    public var selectorHeight: CGFloat
+    
 }
 
 
@@ -31,7 +32,7 @@ typealias YSSegmentedControlItemAction = (item: YSSegmentedControlItem) -> Void
 class YSSegmentedControlItem: UIControl {
     
     // MARK: Properties
-
+    
     private var willPress: YSSegmentedControlItemAction?
     private var didPressed: YSSegmentedControlItemAction?
     var label: UILabel!
@@ -44,15 +45,15 @@ class YSSegmentedControlItem: UIControl {
         appearance: YSSegmentedControlAppearance,
         willPress: YSSegmentedControlItemAction?,
         didPressed: YSSegmentedControlItemAction?) {
-        super.init(frame: frame)
-        self.willPress = willPress
-        self.didPressed = didPressed
-        label = UILabel(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
-        label.textColor = appearance.textColor
-        label.font = appearance.font
-        label.textAlignment = .Center
-        label.text = text
-        addSubview(label)
+            super.init(frame: frame)
+            self.willPress = willPress
+            self.didPressed = didPressed
+            label = UILabel(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
+            label.textColor = appearance.textColor
+            label.font = appearance.font
+            label.textAlignment = .Center
+            label.text = text
+            addSubview(label)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -60,7 +61,7 @@ class YSSegmentedControlItem: UIControl {
     }
     
     // MARK: Events
-
+    
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         willPress?(item: self)
     }
@@ -78,7 +79,7 @@ class YSSegmentedControlItem: UIControl {
     optional func segmentedControlDidPressedItemAtIndex (segmentedControl: YSSegmentedControl, index: Int)
 }
 
-typealias YSSegmentedControlAction = (segmentedControl: YSSegmentedControl, index: Int) -> Void
+public typealias YSSegmentedControlAction = (segmentedControl: YSSegmentedControl, index: Int) -> Void
 
 public class YSSegmentedControl: UIView {
     
@@ -87,7 +88,7 @@ public class YSSegmentedControl: UIView {
     weak var delegate: YSSegmentedControlDelegate?
     var action: YSSegmentedControlAction?
     
-    var appearance: YSSegmentedControlAppearance! {
+    public var appearance: YSSegmentedControlAppearance! {
         didSet {
             self.draw()
         }
@@ -99,13 +100,13 @@ public class YSSegmentedControl: UIView {
     
     // MARK: Init
     
-    init (frame: CGRect, titles: [String], action: YSSegmentedControlAction? = nil) {
+    public init (frame: CGRect, titles: [String], action: YSSegmentedControlAction? = nil) {
         super.init (frame: frame)
         self.action = action
         self.titles = titles
         defaultAppearance()
     }
-
+    
     required public init? (coder aDecoder: NSCoder) {
         super.init (coder: aDecoder)
     }
@@ -114,7 +115,7 @@ public class YSSegmentedControl: UIView {
     
     private func reset () {
         for sub in subviews {
-            let v = sub 
+            let v = sub
             v.removeFromSuperview()
         }
         items = []
@@ -144,7 +145,7 @@ public class YSSegmentedControl: UIView {
                     self.selectItemAtIndex(index)
                     self.action?(segmentedControl: self, index: index)
                     self.delegate?.segmentedControlDidPressedItemAtIndex?(self, index: index)
-                })
+            })
             addSubview(item)
             items.append(item)
             currentX += width
