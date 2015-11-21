@@ -143,7 +143,7 @@ public class YSSegmentedControl: UIView {
                 didPressed: {
                     segmentedControlItem in
                     let index = self.items.indexOf(segmentedControlItem)!
-                    self.selectItemAtIndex(index)
+                    self.selectItemAtIndex(index, withAnimation: true)
                     self.action?(segmentedControl: self, index: index)
                     self.delegate?.segmentedControlDidPressedItemAtIndex?(self, index: index)
             })
@@ -169,7 +169,7 @@ public class YSSegmentedControl: UIView {
         selector.backgroundColor = appearance.selectorColor
         addSubview(selector)
         
-        selectItemAtIndex(0)
+        selectItemAtIndex(0, withAnimation: true)
     }
     
     private func defaultAppearance () {
@@ -189,8 +189,8 @@ public class YSSegmentedControl: UIView {
     
     // MARK: Select
     
-    private func selectItemAtIndex (index: Int) {
-        moveSelectorAtIndex(index)
+    public func selectItemAtIndex (index: Int, withAnimation: Bool) {
+        moveSelectorAtIndex(index, withAnimation: withAnimation)
         for item in items {
             if item == items[index] {
                 item.label.textColor = appearance.selectedTextColor
@@ -204,10 +204,10 @@ public class YSSegmentedControl: UIView {
         }
     }
     
-    private func moveSelectorAtIndex (index: Int) {
+    private func moveSelectorAtIndex (index: Int, withAnimation: Bool) {
         let width = frame.size.width / CGFloat(items.count)
         let target = width * CGFloat(index)
-        UIView.animateWithDuration(0.3,
+        UIView.animateWithDuration(withAnimation ? 0.3 : 0,
             delay: 0,
             usingSpringWithDamping: 1,
             initialSpringVelocity: 0,
