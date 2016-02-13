@@ -16,7 +16,7 @@ Install
 
 Copy & paste `YSSegmentedControl.swift` in your project
 
-##### Cocoapods
+##### CocoaPods
 
 ``` ruby
 use_frameworks!
