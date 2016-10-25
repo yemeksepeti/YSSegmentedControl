@@ -97,7 +97,12 @@ public class YSSegmentedControl: UIView {
     
     public var titles: [String]! {
         didSet {
-            self.draw()
+            if appearance == nil {
+                defaultAppearance()
+            }
+            else {
+                self.draw()
+            }
         }
     }
     
