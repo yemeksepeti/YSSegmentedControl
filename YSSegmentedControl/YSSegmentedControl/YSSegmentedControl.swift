@@ -87,7 +87,7 @@ public class YSSegmentedControl: UIView {
     // MARK: Properties
     
     weak var delegate: YSSegmentedControlDelegate?
-    var action: YSSegmentedControlAction?
+    public var action: YSSegmentedControlAction?
     
     public var appearance: YSSegmentedControlAppearance! {
         didSet {
