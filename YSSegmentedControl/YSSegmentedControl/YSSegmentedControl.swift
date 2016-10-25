@@ -95,7 +95,12 @@ public class YSSegmentedControl: UIView {
         }
     }
     
-    var titles: [String]!
+    public var titles: [String]! {
+        didSet {
+            self.draw()
+        }
+    }
+    
     var items: [YSSegmentedControlItem]!
     var selector: UIView!
     
