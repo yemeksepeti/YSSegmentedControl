@@ -46,15 +46,26 @@ class YSSegmentedControlItem: UIControl {
         appearance: YSSegmentedControlAppearance,
         willPress: YSSegmentedControlItemAction?,
         didPressed: YSSegmentedControlItemAction?) {
-            super.init(frame: frame)
-            self.willPress = willPress
-            self.didPressed = didPressed
-            label = UILabel(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
-            label.textColor = appearance.textColor
-            label.font = appearance.font
-            label.textAlignment = .Center
-            label.text = text
-            addSubview(label)
+        super.init(frame: frame)
+        self.willPress = willPress
+        self.didPressed = didPressed
+        label = UILabel(frame: CGRectZero)
+        label.textColor = appearance.textColor
+        label.font = appearance.font
+        label.textAlignment = .Center
+        label.text = text
+        label.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(label)
+        
+        let views = ["label": label]
+        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[label]|",
+            options: [],
+            metrics: nil,
+            views: views))
+        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[label]|",
+            options: [],
+            metrics: nil,
+            views: views))
     }
     
     required init?(coder aDecoder: NSCoder) {
