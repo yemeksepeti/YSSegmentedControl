@@ -49,11 +49,22 @@ class YSSegmentedControlItem: UIControl {
         super.init(frame: frame)
         self.willPress = willPress
         self.didPressed = didPressed
-        label = UILabel(frame: CGRectZero)
+        
+        commonInit()
         label.textColor = appearance.textColor
         label.font = appearance.font
-        label.textAlignment = .Center
         label.text = text
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init (coder: aDecoder)
+        
+        commonInit()
+    }
+    
+    private func commonInit() {
+        label = UILabel(frame: CGRectZero)
+        label.textAlignment = .Center
         label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)
         
@@ -66,10 +77,6 @@ class YSSegmentedControlItem: UIControl {
             options: [],
             metrics: nil,
             views: views))
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init (coder: aDecoder)
     }
     
     // MARK: Events
