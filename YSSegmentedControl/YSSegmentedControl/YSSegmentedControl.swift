@@ -141,6 +141,8 @@ public class YSSegmentedControl: UIView {
             let v = sub
             v.removeFromSuperview()
         }
+        
+        items.removeAll()
     }
     
     private func draw () {
