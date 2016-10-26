@@ -117,8 +117,8 @@ public class YSSegmentedControl: UIView {
         }
     }
     
-    var items: [YSSegmentedControlItem]!
     var selector: UIView!
+    var items = [YSSegmentedControlItem]()
     
     // MARK: Init
     
@@ -140,7 +140,6 @@ public class YSSegmentedControl: UIView {
             let v = sub
             v.removeFromSuperview()
         }
-        items = []
     }
     
     private func draw () {
