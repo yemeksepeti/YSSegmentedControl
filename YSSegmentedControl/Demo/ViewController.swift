@@ -8,13 +8,13 @@
 
 import UIKit
 
-class ViewController: UIViewController, YSSegmentedControlDelegate {
+class ViewController: UIViewController {
 
     // MARK: Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor (white: 240.0/255.0, alpha: 1)
+        view.backgroundColor = UIColor(white: 240.0/255.0, alpha: 1)
         navigationItem.title = "Demo"
         
         let segmented = YSSegmentedControl(
@@ -35,15 +35,14 @@ class ViewController: UIViewController, YSSegmentedControlDelegate {
         segmented.delegate = self
         view.addSubview(segmented)
     }
-    
-    // MARK: YSSegmentedControlDelegate
-    
-    func segmentedControlWillPressItemAtIndex(segmentedControl: YSSegmentedControl, index: Int) {
+}
+
+extension ViewController: YSSegmentedControlDelegate {
+    func segmentedControl(_ segmentedControl: YSSegmentedControl, willPressItemAt index: Int) {
         print ("[Delegate] segmented will press \(index)")
     }
     
-    func segmentedControlDidPressedItemAtIndex(segmentedControl: YSSegmentedControl, index: Int) {
-        print ("[Delegate] segmented did pressed \(index)")
+    func segmentedControl(_ segmentedControl: YSSegmentedControl, didPressItemAt index: Int) {
+        print ("[Delegate] segmented did press \(index)")
     }
 }
-
