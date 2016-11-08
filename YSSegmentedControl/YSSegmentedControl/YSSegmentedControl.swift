@@ -38,24 +38,42 @@ class YSSegmentedControlItem: UIControl {
     
     // MARK: Init
     
-    init (frame: CGRect,
-          text: String,
-          appearance: YSSegmentedControlAppearance,
-          willPress: YSSegmentedControlItemAction?,
-          didPress: YSSegmentedControlItemAction?) {
+    init(frame: CGRect,
+         text: String,
+         appearance: YSSegmentedControlAppearance,
+         willPress: YSSegmentedControlItemAction?,
+         didPress: YSSegmentedControlItemAction?) {
         super.init(frame: frame)
         self.willPress = willPress
         self.didPress = didPress
-        label = UILabel(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
+        
+        commonInit()
         label.textColor = appearance.textColor
         label.font = appearance.font
-        label.textAlignment = .center
         label.text = text
-        addSubview(label)
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init (coder: aDecoder)
+        
+        commonInit()
+    }
+    
+    private func commonInit() {
+        label = UILabel()
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(label)
+        
+        let views: [String: Any] = ["label": label]
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[label]|",
+            options: [],
+            metrics: nil,
+            views: views))
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[label]|",
+            options: [],
+            metrics: nil,
+            views: views))
     }
     
     // MARK: Events
@@ -103,8 +121,9 @@ public class YSSegmentedControl: UIView {
         }
     }
     
-    var items: [YSSegmentedControlItem]!
-    var selector: UIView!
+    var items = [YSSegmentedControlItem]()
+    var selector = UIView()
+    var bottomLine = CALayer()
     
     // MARK: Init
     
@@ -126,21 +145,16 @@ public class YSSegmentedControl: UIView {
             let v = sub
             v.removeFromSuperview()
         }
-        items = []
+        
+        items.removeAll()
     }
     
     private func draw() {
         reset()
         backgroundColor = appearance.backgroundColor
-        let width = frame.size.width / CGFloat(titles.count)
-        var currentX: CGFloat = 0
         for title in titles {
             let item = YSSegmentedControlItem(
-                frame: CGRect(
-                    x: currentX,
-                    y: appearance.labelTopPadding,
-                    width: width,
-                    height: frame.size.height - appearance.labelTopPadding),
+                frame: .zero,
                 text: title,
                 appearance: appearance,
                 willPress: { [weak self] segmentedControlItem in
@@ -163,27 +177,45 @@ public class YSSegmentedControl: UIView {
             })
             addSubview(item)
             items.append(item)
-            currentX += width
         }
         // bottom line
-        let bottomLine = CALayer()
+        bottomLine.backgroundColor = appearance.bottomLineColor.cgColor
+        layer.addSublayer(bottomLine)
+        // selector
+        selector.backgroundColor = appearance.selectorColor
+        addSubview(selector)
+        
+        selectItem(at: 0, withAnimation: true)
+        
+        setNeedsLayout()
+    }
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        let width = frame.size.width / CGFloat(titles.count)
+        var currentX: CGFloat = 0
+        
+        for item in items {
+            item.frame = CGRect(
+                x: currentX,
+                y: appearance.labelTopPadding,
+                width: width,
+                height: frame.size.height - appearance.labelTopPadding)
+            currentX += width
+        }
+        
         bottomLine.frame = CGRect(
             x: 0,
             y: frame.size.height - appearance.bottomLineHeight,
             width: frame.size.width,
             height: appearance.bottomLineHeight)
-        bottomLine.backgroundColor = appearance.bottomLineColor.cgColor
-        layer.addSublayer(bottomLine)
-        // selector
-        selector = UIView (frame: CGRect (
-            x: 0,
+        
+        selector.frame = CGRect (
+            x: selector.frame.origin.x,
             y: frame.size.height - appearance.selectorHeight,
             width: width,
-            height: appearance.selectorHeight))
-        selector.backgroundColor = appearance.selectorColor
-        addSubview(selector)
-        
-        selectItem(at: 0, withAnimation: true)
+            height: appearance.selectorHeight)
     }
     
     private func defaultAppearance() {
