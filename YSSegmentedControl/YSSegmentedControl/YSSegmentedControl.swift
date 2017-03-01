@@ -87,7 +87,7 @@ public class YSSegmentedControl: UIView {
     // MARK: Properties
     
     weak var delegate: YSSegmentedControlDelegate?
-    var action: YSSegmentedControlAction?
+    public var action: YSSegmentedControlAction?
     
     public var appearance: YSSegmentedControlAppearance! {
         didSet {
@@ -95,7 +95,17 @@ public class YSSegmentedControl: UIView {
         }
     }
     
-    var titles: [String]!
+    public var titles: [String]! {
+        didSet {
+            if appearance == nil {
+                defaultAppearance()
+            }
+            else {
+                self.draw()
+            }
+        }
+    }
+    
     var items: [YSSegmentedControlItem]!
     var selector: UIView!
     
