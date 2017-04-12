@@ -104,6 +104,8 @@ public class YSSegmentedControl: UIView {
     weak var delegate: YSSegmentedControlDelegate?
     public var action: YSSegmentedControlAction?
     
+    private var selectedIndex = 0
+    
     public var appearance: YSSegmentedControlAppearance! {
         didSet {
             self.draw()
@@ -211,8 +213,10 @@ public class YSSegmentedControl: UIView {
             width: frame.size.width,
             height: appearance.bottomLineHeight)
         
+        let target = width * CGFloat(selectedIndex)
+        
         selector.frame = CGRect (
-            x: selector.frame.origin.x,
+            x: target,
             y: frame.size.height - appearance.selectorHeight,
             width: width,
             height: appearance.selectorHeight)
@@ -236,6 +240,7 @@ public class YSSegmentedControl: UIView {
     // MARK: Select
     
     public func selectItem(at index: Int, withAnimation animation: Bool) {
+        self.selectedIndex = index
         moveSelector(at: index, withAnimation: animation)
         for item in items {
             if item == items[index] {
