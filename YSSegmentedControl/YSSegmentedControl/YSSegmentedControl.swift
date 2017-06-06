@@ -187,7 +187,7 @@ public class YSSegmentedControl: UIView {
         selector.backgroundColor = appearance.selectorColor
         addSubview(selector)
         
-        selectItem(at: 0, withAnimation: true)
+        selectItem(at: selectedIndex, withAnimation: true)
         
         setNeedsLayout()
     }
