@@ -22,6 +22,23 @@ public struct YSSegmentedControlAppearance {
     public var bottomLineHeight: CGFloat
     public var selectorHeight: CGFloat
     public var labelTopPadding: CGFloat
+    
+    /**
+     The distance between the top of the selector and the bottom
+     of the label.
+     If this is nil, then the selector will be anchored on the bottom
+     of the segmented control;
+     otherwise the selector will be this distance from the bottom of the label.
+     */
+    public var selectorOffsetFromLabel: CGFloat?
+    
+    /**
+     Whether or not the selector spans the full width of the
+     YSSegmentedControlItem.
+     If set to true, the selector will span the entire width of the item;
+     if set to false, the selector will span the entire width of the label.
+     */
+    public var selectorSpansFullItemWidth: Bool
 }
 
 // MARK: - Control Item
@@ -249,7 +266,9 @@ public class YSSegmentedControl: UIView {
             selectorColor: .black,
             bottomLineHeight: 0.5,
             selectorHeight: 2,
-            labelTopPadding: 0)
+            labelTopPadding: 0,
+            selectorOffsetFromLabel: nil,
+            selectorSpansFullItemWidth: true)
     }
     
     // MARK: Select
