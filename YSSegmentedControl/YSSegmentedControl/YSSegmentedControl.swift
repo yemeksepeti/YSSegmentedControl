@@ -65,15 +65,30 @@ class YSSegmentedControlItem: UIControl {
         label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)
         
+        addConstraint(NSLayoutConstraint(item: label,
+                                         attribute: .centerX,
+                                         relatedBy: .equal,
+                                         toItem: self,
+                                         attribute: .centerX,
+                                         multiplier: 1.0,
+                                         constant: 0.0))
+        addConstraint(NSLayoutConstraint(item: label,
+                                         attribute: .centerY,
+                                         relatedBy: .equal,
+                                         toItem: self,
+                                         attribute: .centerY,
+                                         multiplier: 1.0,
+                                         constant: 0.0))
+        
         let views: [String: Any] = ["label": label]
-        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[label]|",
-            options: [],
-            metrics: nil,
-            views: views))
-        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[label]|",
-            options: [],
-            metrics: nil,
-            views: views))
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(>=0)-[label]-(<=0)-|",
+                                                      options: [],
+                                                      metrics: nil,
+                                                      views: views))
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(>=0)-[label]-(<=0)-|",
+                                                      options: [],
+                                                      metrics: nil,
+                                                      views: views))
     }
     
     // MARK: Events
