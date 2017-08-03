@@ -304,6 +304,10 @@ public class YSSegmentedControl: UIView {
     }
     
     private func moveSelector(at index: Int, withAnimation animation: Bool) {
+        guard items.count > selectedIndex else {
+            return
+        }
+        
         layoutIfNeeded()
 
         if let selectorWidthConstraint = selectorWidthConstraint {
