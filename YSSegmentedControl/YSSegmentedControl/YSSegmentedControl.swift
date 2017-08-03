@@ -89,6 +89,7 @@ class YSSegmentedControlItem: UIControl {
                                          attribute: .centerX,
                                          multiplier: 1.0,
                                          constant: 0.0))
+
         addConstraint(NSLayoutConstraint(item: label,
                                          attribute: .centerY,
                                          relatedBy: .equal,
