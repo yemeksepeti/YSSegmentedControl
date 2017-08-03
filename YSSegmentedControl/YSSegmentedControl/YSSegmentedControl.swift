@@ -99,11 +99,11 @@ class YSSegmentedControlItem: UIControl {
                                          constant: 0.0))
         
         let views: [String: Any] = ["label": label]
-        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(>=0)-[label]-(<=0)-|",
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(>=0)-[label]-(>=0)-|",
                                                       options: [],
                                                       metrics: nil,
                                                       views: views))
-        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(>=0)-[label]-(<=0)-|",
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(>=0)-[label]-(>=0)-|",
                                                       options: [],
                                                       metrics: nil,
                                                       views: views))
