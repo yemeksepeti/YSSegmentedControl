@@ -12,29 +12,28 @@ class ViewController: UIViewController {
 
     // MARK: Lifecycle
     
+    let segmented = YSSegmentedControl(frame: .zero, titles: [])
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(white: 240.0/255.0, alpha: 1)
         navigationItem.title = "Demo"
+
+        segmented.frame = CGRect(x: 0, y: 64, width: view.frame.size.width, height: 44)
+        segmented.titles = ["First", "Second", "Third"]
+        segmented.action = { control, index in
+            print ("segmented did pressed \(index)")
+        }
         
-        let segmented = YSSegmentedControl(
-            frame: CGRect(
-                x: 0,
-                y: 64,
-                width: view.frame.size.width,
-                height: 44),
-            titles: [
-                "First",
-                "Second",
-                "Third"
-            ],
-            action: {
-                control, index in
-                print ("segmented did pressed \(index)")
-            })
         segmented.delegate = self
         view.addSubview(segmented)
     }
+    
+    @IBAction func didToggleSelectorSpansFullItemWidthSwitch(_ sender: UISwitch) {
+        var appearance = segmented.appearance
+        appearance?.selectorSpansFullItemWidth = sender.isOn
+        segmented.appearance = appearance
+    }
+    
 }
 
 extension ViewController: YSSegmentedControlDelegate {

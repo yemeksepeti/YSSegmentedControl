@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -20,7 +21,27 @@
                     <view key="view" contentMode="scaleToFill" id="vvK-VF-ak6">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="selectorSpansFullItemWidth" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AQb-M4-fCx">
+                                <rect key="frame" x="16" y="178" width="214" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2as-26-5uL">
+                                <rect key="frame" x="310" y="173" width="51" height="31"/>
+                                <connections>
+                                    <action selector="didToggleSelectorSpansFullItemWidthSwitch:" destination="VTR-Tb-F2F" eventType="valueChanged" id="bDR-UU-AIw"/>
+                                </connections>
+                            </switch>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="AQb-M4-fCx" firstAttribute="top" secondItem="LAM-vU-5PP" secondAttribute="bottom" constant="114" id="6Nf-Iz-Fhu"/>
+                            <constraint firstItem="2as-26-5uL" firstAttribute="centerY" secondItem="AQb-M4-fCx" secondAttribute="centerY" id="SjJ-0v-HDm"/>
+                            <constraint firstItem="2as-26-5uL" firstAttribute="trailing" secondItem="vvK-VF-ak6" secondAttribute="trailingMargin" id="owm-e9-8hB"/>
+                            <constraint firstItem="AQb-M4-fCx" firstAttribute="leading" secondItem="vvK-VF-ak6" secondAttribute="leadingMargin" id="rok-g6-kWh"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="OK5-fF-1mM"/>
                 </viewController>
