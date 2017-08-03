@@ -317,7 +317,14 @@ public class YSSegmentedControl: UIView {
             removeConstraint(selectorLeadingConstraint)
         }
         
-        let item = items[selectedIndex]
+        let item: UIView
+            
+        if appearance.selectorSpansFullItemWidth {
+            item = items[selectedIndex]
+        }
+        else {
+            item = items[selectedIndex].label
+        }
         
         selectorLeadingConstraint = NSLayoutConstraint(item: selector,
                                                        attribute: .leading,
