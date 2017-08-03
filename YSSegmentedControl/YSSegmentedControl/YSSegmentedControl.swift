@@ -160,6 +160,9 @@ public class YSSegmentedControl: UIView {
     var selector = UIView()
     var bottomLine = CALayer()
     
+    fileprivate var selectorLeadingConstraint: NSLayoutConstraint?
+    fileprivate var selectorWidthConstraint: NSLayoutConstraint?
+    
     // MARK: Init
     
     public init (frame: CGRect, titles: [String], action: YSSegmentedControlAction? = nil) {
@@ -216,9 +219,27 @@ public class YSSegmentedControl: UIView {
         // bottom line
         bottomLine.backgroundColor = appearance.bottomLineColor.cgColor
         layer.addSublayer(bottomLine)
+        
         // selector
+        selector.translatesAutoresizingMaskIntoConstraints = false
         selector.backgroundColor = appearance.selectorColor
         addSubview(selector)
+        
+        addConstraint(NSLayoutConstraint(item: selector,
+                                         attribute: .height,
+                                         relatedBy: .equal,
+                                         toItem: nil,
+                                         attribute: .notAnAttribute,
+                                         multiplier: 1.0,
+                                         constant: appearance.selectorHeight))
+        
+        addConstraint(NSLayoutConstraint(item: selector,
+                                         attribute: .bottom,
+                                         relatedBy: .equal,
+                                         toItem: self,
+                                         attribute: .bottom,
+                                         multiplier: 1.0,
+                                         constant: 0))
         
         selectItem(at: selectedIndex, withAnimation: true)
         
@@ -245,14 +266,6 @@ public class YSSegmentedControl: UIView {
             y: frame.size.height - appearance.bottomLineHeight,
             width: frame.size.width,
             height: appearance.bottomLineHeight)
-        
-        let target = width * CGFloat(selectedIndex)
-        
-        selector.frame = CGRect (
-            x: target,
-            y: frame.size.height - appearance.selectorHeight,
-            width: width,
-            height: appearance.selectorHeight)
     }
     
     private func defaultAppearance() {
@@ -291,8 +304,35 @@ public class YSSegmentedControl: UIView {
     }
     
     private func moveSelector(at index: Int, withAnimation animation: Bool) {
-        let width = frame.size.width / CGFloat(items.count)
-        let target = width * CGFloat(index)
+        layoutIfNeeded()
+
+        if let selectorWidthConstraint = selectorWidthConstraint {
+            removeConstraint(selectorWidthConstraint)
+        }
+        if let selectorLeadingConstraint = selectorLeadingConstraint {
+            removeConstraint(selectorLeadingConstraint)
+        }
+        
+        let item = items[selectedIndex]
+        
+        selectorLeadingConstraint = NSLayoutConstraint(item: selector,
+                                                       attribute: .leading,
+                                                       relatedBy: .equal,
+                                                       toItem: item,
+                                                       attribute: .leading,
+                                                       multiplier: 1.0,
+                                                       constant: 0)
+        
+        selectorWidthConstraint = NSLayoutConstraint(item: selector,
+                                                     attribute: .width,
+                                                     relatedBy: .equal,
+                                                     toItem: item,
+                                                     attribute: .width,
+                                                     multiplier: 1.0,
+                                                     constant: 0)
+        
+        self.addConstraints([self.selectorWidthConstraint!, self.selectorLeadingConstraint!])
+        
         UIView.animate(withDuration: animation ? 0.3 : 0,
                        delay: 0,
                        usingSpringWithDamping: 1,
@@ -300,7 +340,8 @@ public class YSSegmentedControl: UIView {
                        options: [],
                        animations: {
                         [unowned self] in
-                        self.selector.frame.origin.x = target
+                        
+                        self.layoutIfNeeded()
             },
                        completion: nil)
     }
