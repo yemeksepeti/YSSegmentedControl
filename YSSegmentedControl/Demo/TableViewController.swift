@@ -34,6 +34,10 @@ class TableViewController: UITableViewController {
         navigationItem.titleView = segmented
         
         selectorOffsetFromLabelValueLabel.text = "\(selectorOffsetFromLabelStepper.value)"
+        
+        selectorOffsetFromLabelStepper.value = Double(segmented.appearance.selectorOffsetFromLabel ?? 0)
+        selectorOffsetFromLabelSwitch.isOn = segmented.appearance.selectorOffsetFromLabel != nil
+        selectorOffsetFromLabelValueLabel.text = "\(selectorOffsetFromLabelStepper.value)"
     }
     
     @IBAction func didToggleSelectorSpansFullItemWidthSwitch(_ sender: UISwitch) {
