@@ -13,10 +13,10 @@ import UIKit
 public struct YSSegmentedControlAppearance {
     public var backgroundColor: UIColor
     public var selectedBackgroundColor: UIColor
-    public var textColor: UIColor
-    public var font: UIFont
-    public var selectedTextColor: UIColor
-    public var selectedFont: UIFont
+    
+    public var textAttributes: [String : Any]
+    public var selectedTextAttributes: [String : Any]
+    
     public var bottomLineColor: UIColor
     public var selectorColor: UIColor
     public var bottomLineHeight: CGFloat
@@ -51,6 +51,7 @@ class YSSegmentedControlItem: UIControl {
     
     private var willPress: YSSegmentedControlItemAction?
     private var didPress: YSSegmentedControlItemAction?
+    
     var label: UILabel!
     
     // MARK: Init
@@ -65,9 +66,7 @@ class YSSegmentedControlItem: UIControl {
         self.didPress = didPress
         
         commonInit()
-        label.textColor = appearance.textColor
-        label.font = appearance.font
-        label.text = text
+        label.attributedText = NSAttributedString(string: text, attributes: appearance.textAttributes)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -107,6 +106,17 @@ class YSSegmentedControlItem: UIControl {
                                                       options: [],
                                                       metrics: nil,
                                                       views: views))
+    }
+    
+    // MARK: UI Helpers
+    
+    func updateLabelAttributes(_ attributes: [String : Any]) {
+        guard let labelText = label.text else {
+            return
+        }
+        
+        label.attributedText = NSAttributedString(string: labelText,
+                                                  attributes: attributes)
     }
     
     // MARK: Events
@@ -265,10 +275,8 @@ public class YSSegmentedControl: UIView {
         appearance = YSSegmentedControlAppearance(
             backgroundColor: .clear,
             selectedBackgroundColor: .clear,
-            textColor: .gray,
-            font: .systemFont(ofSize: 15),
-            selectedTextColor: .black,
-            selectedFont: .systemFont(ofSize: 15),
+            textAttributes: [:],
+            selectedTextAttributes: [:],
             bottomLineColor: .black,
             selectorColor: .black,
             bottomLineHeight: 0.5,
@@ -285,12 +293,10 @@ public class YSSegmentedControl: UIView {
         moveSelector(at: index, withAnimation: animation)
         for item in items {
             if item == items[index] {
-                item.label.textColor = appearance.selectedTextColor
-                item.label.font = appearance.selectedFont
+                item.updateLabelAttributes(appearance.selectedTextAttributes)
                 item.backgroundColor = appearance.selectedBackgroundColor
             } else {
-                item.label.textColor = appearance.textColor
-                item.label.font = appearance.font
+                item.updateLabelAttributes(appearance.textAttributes)
                 item.backgroundColor = appearance.backgroundColor
             }
         }

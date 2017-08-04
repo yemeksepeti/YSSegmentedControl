@@ -30,6 +30,11 @@ class TableViewController: UITableViewController {
         }
         
         segmented.delegate = self
+        
+        var appearance = segmented.appearance
+        appearance?.textAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 16), NSForegroundColorAttributeName: UIColor.gray]
+        appearance?.selectedTextAttributes = [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 16), NSForegroundColorAttributeName: UIColor.black]
+        segmented.appearance = appearance
 
         navigationItem.titleView = segmented
         
