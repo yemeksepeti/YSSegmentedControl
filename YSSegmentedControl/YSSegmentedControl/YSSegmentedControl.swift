@@ -14,7 +14,7 @@ public struct YSSegmentedControlAppearance {
     public var backgroundColor: UIColor
     public var selectedBackgroundColor: UIColor
     
-    public var textAttributes: [String : Any]
+    public var unselectedTextAttributes: [String : Any]
     public var selectedTextAttributes: [String : Any]
     
     public var bottomLineColor: UIColor
@@ -66,7 +66,7 @@ class YSSegmentedControlItem: UIControl {
         self.didPress = didPress
         
         commonInit()
-        label.attributedText = NSAttributedString(string: text, attributes: appearance.textAttributes)
+        label.attributedText = NSAttributedString(string: text, attributes: appearance.unselectedTextAttributes)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -275,7 +275,7 @@ public class YSSegmentedControl: UIView {
         appearance = YSSegmentedControlAppearance(
             backgroundColor: .clear,
             selectedBackgroundColor: .clear,
-            textAttributes: [:],
+            unselectedTextAttributes: [:],
             selectedTextAttributes: [:],
             bottomLineColor: .black,
             selectorColor: .black,
@@ -296,7 +296,7 @@ public class YSSegmentedControl: UIView {
                 item.updateLabelAttributes(appearance.selectedTextAttributes)
                 item.backgroundColor = appearance.selectedBackgroundColor
             } else {
-                item.updateLabelAttributes(appearance.textAttributes)
+                item.updateLabelAttributes(appearance.unselectedTextAttributes)
                 item.backgroundColor = appearance.backgroundColor
             }
         }
