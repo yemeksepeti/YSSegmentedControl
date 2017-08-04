@@ -21,7 +21,7 @@ public struct YSSegmentedControlAppearance {
     public var selectorColor: UIColor
     public var bottomLineHeight: CGFloat
     public var selectorHeight: CGFloat
-    public var labelTopPadding: CGFloat
+    public var itemTopPadding: CGFloat
     
     /**
      The distance between the top of the selector and the bottom
@@ -303,9 +303,9 @@ public class YSSegmentedControl: UIView {
         for item in items {
             item.frame = CGRect(
                 x: currentX,
-                y: appearance.labelTopPadding,
+                y: appearance.itemTopPadding,
                 width: width,
-                height: frame.size.height - appearance.labelTopPadding)
+                height: frame.size.height - appearance.itemTopPadding)
             currentX += width
         }
         
@@ -326,7 +326,7 @@ public class YSSegmentedControl: UIView {
             selectorColor: .black,
             bottomLineHeight: 0.5,
             selectorHeight: 2,
-            labelTopPadding: 0,
+            itemTopPadding: 0,
             selectorOffsetFromLabel: nil,
             selectorSpansFullItemWidth: true,
             labelsOnEndsFloatToEdges: false)
