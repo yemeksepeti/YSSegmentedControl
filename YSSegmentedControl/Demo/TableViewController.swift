@@ -9,7 +9,13 @@
 import UIKit
 
 class TableViewController: UITableViewController {
-
+    
+    // MARK: Demo
+    
+    @IBOutlet weak var selectorOffsetFromLabelStepper: UIStepper!
+    @IBOutlet weak var selectorOffsetFromLabelSwitch: UISwitch!
+    @IBOutlet weak var selectorOffsetFromLabelValueLabel: UILabel!
+    
     // MARK: Lifecycle
     
     let segmented = YSSegmentedControl(frame: .zero, titles: [])
@@ -26,6 +32,8 @@ class TableViewController: UITableViewController {
         segmented.delegate = self
 
         navigationItem.titleView = segmented
+        
+        selectorOffsetFromLabelValueLabel.text = "\(selectorOffsetFromLabelStepper.value)"
     }
     
     @IBAction func didToggleSelectorSpansFullItemWidthSwitch(_ sender: UISwitch) {
@@ -36,7 +44,16 @@ class TableViewController: UITableViewController {
     
     @IBAction func didToggleSelectorOffsetFromLabelSwitch(_ sender: UISwitch) {
         var appearance = segmented.appearance
-        appearance?.selectorOffsetFromLabel = sender.isOn ? 2 : nil
+        appearance?.selectorOffsetFromLabel = sender.isOn ? CGFloat(selectorOffsetFromLabelStepper.value) : nil
+        segmented.appearance = appearance
+    }
+
+    @IBAction func didChageSelectorOffsetFromlabelStepper(_ sender: UIStepper) {
+        selectorOffsetFromLabelSwitch.isOn = true
+        selectorOffsetFromLabelValueLabel.text = "\(sender.value)"
+        
+        var appearance = segmented.appearance
+        appearance?.selectorOffsetFromLabel = CGFloat(sender.value)
         segmented.appearance = appearance
     }
 }
