@@ -162,6 +162,7 @@ public class YSSegmentedControl: UIView {
     
     fileprivate var selectorLeadingConstraint: NSLayoutConstraint?
     fileprivate var selectorWidthConstraint: NSLayoutConstraint?
+    fileprivate var selectorBottomConstraint: NSLayoutConstraint?
     
     // MARK: Init
     
@@ -232,14 +233,6 @@ public class YSSegmentedControl: UIView {
                                          attribute: .notAnAttribute,
                                          multiplier: 1.0,
                                          constant: appearance.selectorHeight))
-        
-        addConstraint(NSLayoutConstraint(item: selector,
-                                         attribute: .bottom,
-                                         relatedBy: .equal,
-                                         toItem: self,
-                                         attribute: .bottom,
-                                         multiplier: 1.0,
-                                         constant: 0))
         
         selectItem(at: selectedIndex, withAnimation: true)
         
@@ -316,20 +309,25 @@ public class YSSegmentedControl: UIView {
         if let selectorLeadingConstraint = selectorLeadingConstraint {
             removeConstraint(selectorLeadingConstraint)
         }
+        if let selectorBottomConstraint = selectorBottomConstraint {
+            removeConstraint(selectorBottomConstraint)
+        }
         
-        let item: UIView
-            
+        let item = items[selectedIndex]
+        
+        let horizontalConstrainingView: UIView
+        
         if appearance.selectorSpansFullItemWidth {
-            item = items[selectedIndex]
+            horizontalConstrainingView = item
         }
         else {
-            item = items[selectedIndex].label
+            horizontalConstrainingView = item.label
         }
         
         selectorLeadingConstraint = NSLayoutConstraint(item: selector,
                                                        attribute: .leading,
                                                        relatedBy: .equal,
-                                                       toItem: item,
+                                                       toItem: horizontalConstrainingView,
                                                        attribute: .leading,
                                                        multiplier: 1.0,
                                                        constant: 0)
@@ -337,12 +335,32 @@ public class YSSegmentedControl: UIView {
         selectorWidthConstraint = NSLayoutConstraint(item: selector,
                                                      attribute: .width,
                                                      relatedBy: .equal,
-                                                     toItem: item,
+                                                     toItem: horizontalConstrainingView,
                                                      attribute: .width,
                                                      multiplier: 1.0,
                                                      constant: 0)
         
-        self.addConstraints([self.selectorWidthConstraint!, self.selectorLeadingConstraint!])
+        if let selectorOffsetFromLabel = appearance.selectorOffsetFromLabel {
+            selectorBottomConstraint = NSLayoutConstraint(item: selector,
+                                                          attribute: .top,
+                                                          relatedBy: .equal,
+                                                          toItem: item.label,
+                                                          attribute: .bottom,
+                                                          multiplier: 1.0,
+                                                          constant: selectorOffsetFromLabel)
+        }
+        else {
+            selectorBottomConstraint = NSLayoutConstraint(item: selector,
+                                                          attribute: .bottom,
+                                                          relatedBy: .equal,
+                                                          toItem: self,
+                                                          attribute: .bottom,
+                                                          multiplier: 1.0,
+                                                          constant: 0)
+        }
+        
+        
+        addConstraints([selectorWidthConstraint!, selectorLeadingConstraint!, selectorBottomConstraint!])
         
         UIView.animate(withDuration: animation ? 0.3 : 0,
                        delay: 0,
