@@ -34,11 +34,27 @@
                                     <action selector="didToggleSelectorSpansFullItemWidthSwitch:" destination="VTR-Tb-F2F" eventType="valueChanged" id="bDR-UU-AIw"/>
                                 </connections>
                             </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="selectorOffsetFromLabel (2)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zn0-QH-n4o">
+                                <rect key="frame" x="16" y="219" width="216" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="xvd-ku-2QY">
+                                <rect key="frame" x="310" y="214" width="51" height="31"/>
+                                <connections>
+                                    <action selector="didToggleSelectorOffsetFromLabelSwitch:" destination="VTR-Tb-F2F" eventType="valueChanged" id="v6N-IX-L65"/>
+                                </connections>
+                            </switch>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="zn0-QH-n4o" firstAttribute="leading" secondItem="AQb-M4-fCx" secondAttribute="leading" id="2lH-a0-noH"/>
                             <constraint firstItem="AQb-M4-fCx" firstAttribute="top" secondItem="LAM-vU-5PP" secondAttribute="bottom" constant="114" id="6Nf-Iz-Fhu"/>
+                            <constraint firstItem="zn0-QH-n4o" firstAttribute="top" secondItem="AQb-M4-fCx" secondAttribute="bottom" constant="20" id="Sj5-if-gop"/>
                             <constraint firstItem="2as-26-5uL" firstAttribute="centerY" secondItem="AQb-M4-fCx" secondAttribute="centerY" id="SjJ-0v-HDm"/>
+                            <constraint firstItem="xvd-ku-2QY" firstAttribute="trailing" secondItem="2as-26-5uL" secondAttribute="trailing" id="h9W-eC-QeD"/>
+                            <constraint firstItem="xvd-ku-2QY" firstAttribute="centerY" secondItem="zn0-QH-n4o" secondAttribute="centerY" id="ihb-3o-gPU"/>
                             <constraint firstItem="2as-26-5uL" firstAttribute="trailing" secondItem="vvK-VF-ak6" secondAttribute="trailingMargin" id="owm-e9-8hB"/>
                             <constraint firstItem="AQb-M4-fCx" firstAttribute="leading" secondItem="vvK-VF-ak6" secondAttribute="leadingMargin" id="rok-g6-kWh"/>
                         </constraints>

@@ -34,6 +34,11 @@ class ViewController: UIViewController {
         segmented.appearance = appearance
     }
     
+    @IBAction func didToggleSelectorOffsetFromLabelSwitch(_ sender: UISwitch) {
+        var appearance = segmented.appearance
+        appearance?.selectorOffsetFromLabel = sender.isOn ? 2 : nil
+        segmented.appearance = appearance
+    }
 }
 
 extension ViewController: YSSegmentedControlDelegate {
