@@ -111,6 +111,35 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="Tjf-ch-ALz">
+                                        <rect key="frame" x="0.0" y="120" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Tjf-ch-ALz" id="Akb-0w-Gpf">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="labelsOnEndsFloatToEdges" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q26-Ps-DNw">
+                                                    <rect key="frame" x="8" y="8" width="208.5" height="27.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="1rn-n8-Gim">
+                                                    <rect key="frame" x="318" y="6.5" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="didToggleLabelsOnEndsFloatToEdgesSwitch:" destination="DNs-Uf-ScM" eventType="valueChanged" id="A9w-rV-Xcn"/>
+                                                    </connections>
+                                                </switch>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="q26-Ps-DNw" firstAttribute="leading" secondItem="Akb-0w-Gpf" secondAttribute="leadingMargin" id="NYi-ch-X2e"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="q26-Ps-DNw" secondAttribute="bottom" id="bfx-v6-br0"/>
+                                                <constraint firstItem="1rn-n8-Gim" firstAttribute="centerY" secondItem="q26-Ps-DNw" secondAttribute="centerY" id="gEX-lI-J0h"/>
+                                                <constraint firstItem="1rn-n8-Gim" firstAttribute="trailing" secondItem="Akb-0w-Gpf" secondAttribute="trailingMargin" id="iOK-3Y-4oW"/>
+                                                <constraint firstItem="q26-Ps-DNw" firstAttribute="top" secondItem="Akb-0w-Gpf" secondAttribute="topMargin" id="raA-31-shz"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -121,6 +150,7 @@
                     </tableView>
                     <navigationItem key="navigationItem" id="HIx-N7-63y"/>
                     <connections>
+                        <outlet property="labelsOnEndsFloatToEdgesSwitch" destination="1rn-n8-Gim" id="1ca-ga-wCZ"/>
                         <outlet property="selectorOffsetFromLabelStepper" destination="5TY-It-D6n" id="4Qn-Sm-zl7"/>
                         <outlet property="selectorOffsetFromLabelSwitch" destination="hRx-s7-rUd" id="rMH-ic-hkg"/>
                         <outlet property="selectorOffsetFromLabelValueLabel" destination="Mzl-12-ShV" id="Xg1-hd-VEJ"/>

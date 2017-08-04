@@ -16,6 +16,8 @@ class TableViewController: UITableViewController {
     @IBOutlet weak var selectorOffsetFromLabelSwitch: UISwitch!
     @IBOutlet weak var selectorOffsetFromLabelValueLabel: UILabel!
     
+    @IBOutlet weak var labelsOnEndsFloatToEdgesSwitch: UISwitch!
+    
     // MARK: Lifecycle
     
     let segmented = YSSegmentedControl(frame: .zero, titles: [])
@@ -38,11 +40,7 @@ class TableViewController: UITableViewController {
 
         navigationItem.titleView = segmented
         
-        selectorOffsetFromLabelValueLabel.text = "\(selectorOffsetFromLabelStepper.value)"
-        
-        selectorOffsetFromLabelStepper.value = Double(segmented.appearance.selectorOffsetFromLabel ?? 0)
-        selectorOffsetFromLabelSwitch.isOn = segmented.appearance.selectorOffsetFromLabel != nil
-        selectorOffsetFromLabelValueLabel.text = "\(selectorOffsetFromLabelStepper.value)"
+        updateAppearanceConfigurationUI()
     }
     
     @IBAction func didToggleSelectorSpansFullItemWidthSwitch(_ sender: UISwitch) {
@@ -64,6 +62,24 @@ class TableViewController: UITableViewController {
         var appearance = segmented.appearance
         appearance?.selectorOffsetFromLabel = CGFloat(sender.value)
         segmented.appearance = appearance
+    }
+    
+    @IBAction func didToggleLabelsOnEndsFloatToEdgesSwitch(_ sender: UISwitch) {
+        var appearance = segmented.appearance
+        appearance?.labelsOnEndsFloatToEdges = sender.isOn
+        segmented.appearance = appearance
+    }
+
+    // MARK: Helpers
+    
+    func updateAppearanceConfigurationUI() {
+        selectorOffsetFromLabelValueLabel.text = "\(selectorOffsetFromLabelStepper.value)"
+        
+        selectorOffsetFromLabelStepper.value = Double(segmented.appearance.selectorOffsetFromLabel ?? 0)
+        selectorOffsetFromLabelSwitch.isOn = segmented.appearance.selectorOffsetFromLabel != nil
+        selectorOffsetFromLabelValueLabel.text = "\(selectorOffsetFromLabelStepper.value)"
+        
+        labelsOnEndsFloatToEdgesSwitch.isOn = segmented.appearance.labelsOnEndsFloatToEdges
     }
 }
 
