@@ -39,6 +39,16 @@ public struct YSSegmentedControlAppearance {
      if set to false, the selector will span the entire width of the label.
      */
     public var selectorSpansFullItemWidth: Bool
+    
+    /**
+     Whether or not the labels on the ends (first and last) float to the edges
+     or are centered within the item.
+     If set to `true`, then the labels float to the edges;
+     if set to `false`, then the labels are centered.
+     
+     Default value is `false`.
+     */
+    public var labelsOnEndsFloatToEdges: Bool
 }
 
 // MARK: - Control Item
@@ -53,6 +63,7 @@ class YSSegmentedControlItem: UIControl {
     private var didPress: YSSegmentedControlItemAction?
     
     var label: UILabel!
+    let labelAlignment: NSTextAlignment
     
     // MARK: Init
     
@@ -60,16 +71,21 @@ class YSSegmentedControlItem: UIControl {
          text: String,
          appearance: YSSegmentedControlAppearance,
          willPress: YSSegmentedControlItemAction?,
-         didPress: YSSegmentedControlItemAction?) {
-        super.init(frame: frame)
+         didPress: YSSegmentedControlItemAction?,
+         labelAlignment: NSTextAlignment) {
         self.willPress = willPress
         self.didPress = didPress
+        self.labelAlignment = labelAlignment
+
+        super.init(frame: frame)
+
         
         commonInit()
         label.attributedText = NSAttributedString(string: text, attributes: appearance.textAttributes)
     }
     
     required init?(coder aDecoder: NSCoder) {
+        self.labelAlignment = .center
         super.init (coder: aDecoder)
         
         commonInit()
@@ -81,11 +97,22 @@ class YSSegmentedControlItem: UIControl {
         label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)
         
+        let attribute: NSLayoutAttribute
+        
+        switch labelAlignment {
+        case .left:
+            attribute = .leading
+        case .right:
+            attribute = .trailing
+        default:
+            attribute = .centerX
+        }
+        
         addConstraint(NSLayoutConstraint(item: label,
-                                         attribute: .centerX,
+                                         attribute: attribute,
                                          relatedBy: .equal,
                                          toItem: self,
-                                         attribute: .centerX,
+                                         attribute: attribute,
                                          multiplier: 1.0,
                                          constant: 0.0))
 
@@ -201,7 +228,23 @@ public class YSSegmentedControl: UIView {
     private func draw() {
         reset()
         backgroundColor = appearance.backgroundColor
-        for title in titles {
+        for (index, title) in titles.enumerated() {
+            let labelAlignment: NSTextAlignment
+            
+            if appearance.labelsOnEndsFloatToEdges {
+                switch index {
+                case 0:
+                    labelAlignment = .left
+                case titles.count - 1:
+                    labelAlignment = .right
+                default:
+                    labelAlignment = .center
+                }
+            }
+            else {
+                labelAlignment = .center
+            }
+            
             let item = YSSegmentedControlItem(
                 frame: .zero,
                 text: title,
@@ -223,10 +266,12 @@ public class YSSegmentedControl: UIView {
                     weakSelf.selectItem(at: index, withAnimation: true)
                     weakSelf.action?(weakSelf, index)
                     weakSelf.delegate?.segmentedControl(weakSelf, didPressItemAt: index)
-            })
+                },
+                labelAlignment: labelAlignment)
             addSubview(item)
             items.append(item)
         }
+
         // bottom line
         bottomLine.backgroundColor = appearance.bottomLineColor.cgColor
         layer.addSublayer(bottomLine)
@@ -283,7 +328,8 @@ public class YSSegmentedControl: UIView {
             selectorHeight: 2,
             labelTopPadding: 0,
             selectorOffsetFromLabel: nil,
-            selectorSpansFullItemWidth: true)
+            selectorSpansFullItemWidth: true,
+            labelsOnEndsFloatToEdges: false)
     }
     
     // MARK: Select
