@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class TableViewController: UITableViewController {
 
     // MARK: Lifecycle
     
@@ -16,7 +16,6 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = "Demo"
 
         segmented.frame = CGRect(x: 0, y: 64, width: view.frame.size.width, height: 44)
         segmented.titles = ["First", "Second", "Third"]
@@ -25,7 +24,8 @@ class ViewController: UIViewController {
         }
         
         segmented.delegate = self
-        view.addSubview(segmented)
+
+        navigationItem.titleView = segmented
     }
     
     @IBAction func didToggleSelectorSpansFullItemWidthSwitch(_ sender: UISwitch) {
@@ -41,7 +41,7 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: YSSegmentedControlDelegate {
+extension TableViewController: YSSegmentedControlDelegate {
     func segmentedControl(_ segmentedControl: YSSegmentedControl, willPressItemAt index: Int) {
         print ("[Delegate] segmented will press \(index)")
     }

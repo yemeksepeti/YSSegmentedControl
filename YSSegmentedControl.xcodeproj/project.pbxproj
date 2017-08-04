@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B28BBFB11BF24CB30064F127 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28BBFA61BF24CB30064F127 /* ViewController.swift */; };
+		B28BBFB11BF24CB30064F127 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28BBFA61BF24CB30064F127 /* TableViewController.swift */; };
 		B28BBFB21BF24CB30064F127 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28BBFA81BF24CB30064F127 /* AppDelegate.swift */; };
 		B28BBFB31BF24CB30064F127 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B28BBFA91BF24CB30064F127 /* LaunchScreen.xib */; };
 		B28BBFB41BF24CB30064F127 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B28BBFAB1BF24CB30064F127 /* Main.storyboard */; };
@@ -27,7 +27,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		B28BBFA61BF24CB30064F127 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		B28BBFA61BF24CB30064F127 /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		B28BBFA81BF24CB30064F127 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B28BBFAA1BF24CB30064F127 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		B28BBFAC1BF24CB30064F127 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -61,7 +61,7 @@
 		B28BBFA51BF24CB30064F127 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
-				B28BBFA61BF24CB30064F127 /* ViewController.swift */,
+				B28BBFA61BF24CB30064F127 /* TableViewController.swift */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -234,7 +234,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B28BBFB21BF24CB30064F127 /* AppDelegate.swift in Sources */,
-				B28BBFB11BF24CB30064F127 /* ViewController.swift in Sources */,
+				B28BBFB11BF24CB30064F127 /* TableViewController.swift in Sources */,
 				B28BBFB71BF24CB30064F127 /* YSSegmentedControl.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
