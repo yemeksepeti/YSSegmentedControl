@@ -34,11 +34,13 @@ public struct YSSegmentedControlAppearance {
     
     /**
      Whether or not the selector spans the full width of the
-     YSSegmentedControlItem.
-     If set to true, the selector will span the entire width of the item;
-     if set to false, the selector will span the entire width of the label.
+     YSSegmentedControlItem's label.
+     If set to true, the selector will span the full width of the label;
+     if set to false, the selector will span the entire width of the item.
+     
+     Defaults to false.
      */
-    public var selectorSpansFullItemWidth: Bool
+    public var selectorSpansLabelWidth: Bool
 }
 
 // MARK: - Control Item
@@ -275,7 +277,7 @@ public class YSSegmentedControl: UIView {
             selectorHeight: 2,
             labelTopPadding: 0,
             selectorOffsetFromLabel: nil,
-            selectorSpansFullItemWidth: true)
+            selectorSpansLabelWidth: false)
     }
     
     // MARK: Select
@@ -317,11 +319,11 @@ public class YSSegmentedControl: UIView {
         
         let horizontalConstrainingView: UIView
         
-        if appearance.selectorSpansFullItemWidth {
-            horizontalConstrainingView = item
+        if appearance.selectorSpansLabelWidth {
+            horizontalConstrainingView = item.label
         }
         else {
-            horizontalConstrainingView = item.label
+            horizontalConstrainingView = item
         }
         
         selectorLeadingConstraint = NSLayoutConstraint(item: selector,

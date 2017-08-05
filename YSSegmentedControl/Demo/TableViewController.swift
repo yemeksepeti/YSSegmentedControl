@@ -40,9 +40,9 @@ class TableViewController: UITableViewController {
         selectorOffsetFromLabelValueLabel.text = "\(selectorOffsetFromLabelStepper.value)"
     }
     
-    @IBAction func didToggleSelectorSpansFullItemWidthSwitch(_ sender: UISwitch) {
+    @IBAction func didToggleselectorSpansLabelWidthSwitch(_ sender: UISwitch) {
         var appearance = segmented.appearance
-        appearance?.selectorSpansFullItemWidth = sender.isOn
+        appearance?.selectorSpansLabelWidth = sender.isOn
         segmented.appearance = appearance
     }
     
