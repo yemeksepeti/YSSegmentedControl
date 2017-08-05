@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "YSSegmentedControl"
-  s.version      = "0.2"
+  s.version      = "0.2.4"
   s.summary      = "Android style segmented control written in swift. Fully customisable."
 
   # This description is used to generate tags and improve search results.
@@ -215,7 +215,7 @@ segmented.appearance.titleColor = ...
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/yemeksepeti/YSSegmentedControl.git", :tag => "v0.1" }
+  s.source       = { :git => "https://github.com/yemeksepeti/YSSegmentedControl.git", :tag => s.version }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #

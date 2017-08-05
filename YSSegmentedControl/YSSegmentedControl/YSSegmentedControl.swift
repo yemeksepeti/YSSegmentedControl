@@ -13,15 +13,42 @@ import UIKit
 public struct YSSegmentedControlAppearance {
     public var backgroundColor: UIColor
     public var selectedBackgroundColor: UIColor
-    public var textColor: UIColor
-    public var font: UIFont
-    public var selectedTextColor: UIColor
-    public var selectedFont: UIFont
+    
+    public var unselectedTextAttributes: [String : Any]
+    public var selectedTextAttributes: [String : Any]
+    
     public var bottomLineColor: UIColor
     public var selectorColor: UIColor
     public var bottomLineHeight: CGFloat
     public var selectorHeight: CGFloat
-    public var labelTopPadding: CGFloat
+    public var itemTopPadding: CGFloat
+    
+    /**
+     The distance between the top of the selector and the bottom
+     of the label.
+     If this is nil, then the selector will be anchored on the bottom
+     of the segmented control;
+     otherwise the selector will be this distance from the bottom of the label.
+     */
+    public var selectorOffsetFromLabel: CGFloat?
+    
+    /**
+     Whether or not the selector spans the full width of the
+     YSSegmentedControlItem.
+     If set to true, the selector will span the entire width of the item;
+     if set to false, the selector will span the entire width of the label.
+     */
+    public var selectorSpansFullItemWidth: Bool
+    
+    /**
+     Whether or not the labels on the ends (first and last) float to the edges
+     or are centered within the item.
+     If set to `true`, then the labels float to the edges;
+     if set to `false`, then the labels are centered.
+     
+     Default value is `false`.
+     */
+    public var labelsOnEndsFloatToEdges: Bool
 }
 
 // MARK: - Control Item
@@ -34,7 +61,9 @@ class YSSegmentedControlItem: UIControl {
     
     private var willPress: YSSegmentedControlItemAction?
     private var didPress: YSSegmentedControlItemAction?
+    
     var label: UILabel!
+    let labelAlignment: NSTextAlignment
     
     // MARK: Init
     
@@ -42,18 +71,21 @@ class YSSegmentedControlItem: UIControl {
          text: String,
          appearance: YSSegmentedControlAppearance,
          willPress: YSSegmentedControlItemAction?,
-         didPress: YSSegmentedControlItemAction?) {
-        super.init(frame: frame)
+         didPress: YSSegmentedControlItemAction?,
+         labelAlignment: NSTextAlignment) {
         self.willPress = willPress
         self.didPress = didPress
+        self.labelAlignment = labelAlignment
+
+        super.init(frame: frame)
+
         
         commonInit()
-        label.textColor = appearance.textColor
-        label.font = appearance.font
-        label.text = text
+        label.attributedText = NSAttributedString(string: text, attributes: appearance.unselectedTextAttributes)
     }
     
     required init?(coder aDecoder: NSCoder) {
+        self.labelAlignment = .center
         super.init (coder: aDecoder)
         
         commonInit()
@@ -65,15 +97,53 @@ class YSSegmentedControlItem: UIControl {
         label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)
         
+        let attribute: NSLayoutAttribute
+        
+        switch labelAlignment {
+        case .left:
+            attribute = .leading
+        case .right:
+            attribute = .trailing
+        default:
+            attribute = .centerX
+        }
+        
+        addConstraint(NSLayoutConstraint(item: label,
+                                         attribute: attribute,
+                                         relatedBy: .equal,
+                                         toItem: self,
+                                         attribute: attribute,
+                                         multiplier: 1.0,
+                                         constant: 0.0))
+
+        addConstraint(NSLayoutConstraint(item: label,
+                                         attribute: .centerY,
+                                         relatedBy: .equal,
+                                         toItem: self,
+                                         attribute: .centerY,
+                                         multiplier: 1.0,
+                                         constant: 0.0))
+        
         let views: [String: Any] = ["label": label]
-        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[label]|",
-            options: [],
-            metrics: nil,
-            views: views))
-        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[label]|",
-            options: [],
-            metrics: nil,
-            views: views))
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(>=0)-[label]-(>=0)-|",
+                                                      options: [],
+                                                      metrics: nil,
+                                                      views: views))
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(>=0)-[label]-(>=0)-|",
+                                                      options: [],
+                                                      metrics: nil,
+                                                      views: views))
+    }
+    
+    // MARK: UI Helpers
+    
+    func updateLabelAttributes(_ attributes: [String : Any]) {
+        guard let labelText = label.text else {
+            return
+        }
+        
+        label.attributedText = NSAttributedString(string: labelText,
+                                                  attributes: attributes)
     }
     
     // MARK: Events
@@ -104,6 +174,8 @@ public class YSSegmentedControl: UIView {
     weak var delegate: YSSegmentedControlDelegate?
     public var action: YSSegmentedControlAction?
     
+    private var selectedIndex = 0
+    
     public var appearance: YSSegmentedControlAppearance! {
         didSet {
             self.draw()
@@ -124,6 +196,10 @@ public class YSSegmentedControl: UIView {
     var items = [YSSegmentedControlItem]()
     var selector = UIView()
     var bottomLine = CALayer()
+    
+    fileprivate var selectorLeadingConstraint: NSLayoutConstraint?
+    fileprivate var selectorWidthConstraint: NSLayoutConstraint?
+    fileprivate var selectorBottomConstraint: NSLayoutConstraint?
     
     // MARK: Init
     
@@ -152,7 +228,23 @@ public class YSSegmentedControl: UIView {
     private func draw() {
         reset()
         backgroundColor = appearance.backgroundColor
-        for title in titles {
+        for (index, title) in titles.enumerated() {
+            let labelAlignment: NSTextAlignment
+            
+            if appearance.labelsOnEndsFloatToEdges {
+                switch index {
+                case 0:
+                    labelAlignment = .left
+                case titles.count - 1:
+                    labelAlignment = .right
+                default:
+                    labelAlignment = .center
+                }
+            }
+            else {
+                labelAlignment = .center
+            }
+            
             let item = YSSegmentedControlItem(
                 frame: .zero,
                 text: title,
@@ -174,18 +266,30 @@ public class YSSegmentedControl: UIView {
                     weakSelf.selectItem(at: index, withAnimation: true)
                     weakSelf.action?(weakSelf, index)
                     weakSelf.delegate?.segmentedControl(weakSelf, didPressItemAt: index)
-            })
+                },
+                labelAlignment: labelAlignment)
             addSubview(item)
             items.append(item)
         }
+
         // bottom line
         bottomLine.backgroundColor = appearance.bottomLineColor.cgColor
         layer.addSublayer(bottomLine)
+        
         // selector
+        selector.translatesAutoresizingMaskIntoConstraints = false
         selector.backgroundColor = appearance.selectorColor
         addSubview(selector)
         
-        selectItem(at: 0, withAnimation: true)
+        addConstraint(NSLayoutConstraint(item: selector,
+                                         attribute: .height,
+                                         relatedBy: .equal,
+                                         toItem: nil,
+                                         attribute: .notAnAttribute,
+                                         multiplier: 1.0,
+                                         constant: appearance.selectorHeight))
+        
+        selectItem(at: selectedIndex, withAnimation: true)
         
         setNeedsLayout()
     }
@@ -199,9 +303,9 @@ public class YSSegmentedControl: UIView {
         for item in items {
             item.frame = CGRect(
                 x: currentX,
-                y: appearance.labelTopPadding,
+                y: appearance.itemTopPadding,
                 width: width,
-                height: frame.size.height - appearance.labelTopPadding)
+                height: frame.size.height - appearance.itemTopPadding)
             currentX += width
         }
         
@@ -210,49 +314,106 @@ public class YSSegmentedControl: UIView {
             y: frame.size.height - appearance.bottomLineHeight,
             width: frame.size.width,
             height: appearance.bottomLineHeight)
-        
-        selector.frame = CGRect (
-            x: selector.frame.origin.x,
-            y: frame.size.height - appearance.selectorHeight,
-            width: width,
-            height: appearance.selectorHeight)
     }
     
     private func defaultAppearance() {
         appearance = YSSegmentedControlAppearance(
             backgroundColor: .clear,
             selectedBackgroundColor: .clear,
-            textColor: .gray,
-            font: .systemFont(ofSize: 15),
-            selectedTextColor: .black,
-            selectedFont: .systemFont(ofSize: 15),
+            unselectedTextAttributes: [:],
+            selectedTextAttributes: [:],
             bottomLineColor: .black,
             selectorColor: .black,
             bottomLineHeight: 0.5,
             selectorHeight: 2,
-            labelTopPadding: 0)
+            itemTopPadding: 0,
+            selectorOffsetFromLabel: nil,
+            selectorSpansFullItemWidth: true,
+            labelsOnEndsFloatToEdges: false)
     }
     
     // MARK: Select
     
     public func selectItem(at index: Int, withAnimation animation: Bool) {
+        self.selectedIndex = index
         moveSelector(at: index, withAnimation: animation)
         for item in items {
             if item == items[index] {
-                item.label.textColor = appearance.selectedTextColor
-                item.label.font = appearance.selectedFont
+                item.updateLabelAttributes(appearance.selectedTextAttributes)
                 item.backgroundColor = appearance.selectedBackgroundColor
             } else {
-                item.label.textColor = appearance.textColor
-                item.label.font = appearance.font
+                item.updateLabelAttributes(appearance.unselectedTextAttributes)
                 item.backgroundColor = appearance.backgroundColor
             }
         }
     }
     
     private func moveSelector(at index: Int, withAnimation animation: Bool) {
-        let width = frame.size.width / CGFloat(items.count)
-        let target = width * CGFloat(index)
+        guard items.count > selectedIndex else {
+            return
+        }
+        
+        layoutIfNeeded()
+
+        if let selectorWidthConstraint = selectorWidthConstraint {
+            removeConstraint(selectorWidthConstraint)
+        }
+        if let selectorLeadingConstraint = selectorLeadingConstraint {
+            removeConstraint(selectorLeadingConstraint)
+        }
+        if let selectorBottomConstraint = selectorBottomConstraint {
+            removeConstraint(selectorBottomConstraint)
+        }
+        
+        let item = items[selectedIndex]
+        
+        let horizontalConstrainingView: UIView
+        
+        if appearance.selectorSpansFullItemWidth {
+            horizontalConstrainingView = item
+        }
+        else {
+            horizontalConstrainingView = item.label
+        }
+        
+        selectorLeadingConstraint = NSLayoutConstraint(item: selector,
+                                                       attribute: .leading,
+                                                       relatedBy: .equal,
+                                                       toItem: horizontalConstrainingView,
+                                                       attribute: .leading,
+                                                       multiplier: 1.0,
+                                                       constant: 0)
+        
+        selectorWidthConstraint = NSLayoutConstraint(item: selector,
+                                                     attribute: .width,
+                                                     relatedBy: .equal,
+                                                     toItem: horizontalConstrainingView,
+                                                     attribute: .width,
+                                                     multiplier: 1.0,
+                                                     constant: 0)
+        
+        if let selectorOffsetFromLabel = appearance.selectorOffsetFromLabel {
+            selectorBottomConstraint = NSLayoutConstraint(item: selector,
+                                                          attribute: .top,
+                                                          relatedBy: .equal,
+                                                          toItem: item.label,
+                                                          attribute: .bottom,
+                                                          multiplier: 1.0,
+                                                          constant: selectorOffsetFromLabel)
+        }
+        else {
+            selectorBottomConstraint = NSLayoutConstraint(item: selector,
+                                                          attribute: .bottom,
+                                                          relatedBy: .equal,
+                                                          toItem: self,
+                                                          attribute: .bottom,
+                                                          multiplier: 1.0,
+                                                          constant: 0)
+        }
+        
+        
+        addConstraints([selectorWidthConstraint!, selectorLeadingConstraint!, selectorBottomConstraint!])
+        
         UIView.animate(withDuration: animation ? 0.3 : 0,
                        delay: 0,
                        usingSpringWithDamping: 1,
@@ -260,7 +421,8 @@ public class YSSegmentedControl: UIView {
                        options: [],
                        animations: {
                         [unowned self] in
-                        self.selector.frame.origin.x = target
+                        
+                        self.layoutIfNeeded()
             },
                        completion: nil)
     }
