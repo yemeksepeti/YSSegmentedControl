@@ -13,15 +13,15 @@ import UIKit
 public struct YSSegmentedControlAppearance {
     public var backgroundColor: UIColor
     public var selectedBackgroundColor: UIColor
-    public var textColor: UIColor
-    public var font: UIFont
-    public var selectedTextColor: UIColor
-    public var selectedFont: UIFont
+    
+    public var unselectedTextAttributes: [String : Any]
+    public var selectedTextAttributes: [String : Any]
+    
     public var bottomLineColor: UIColor
     public var selectorColor: UIColor
     public var bottomLineHeight: CGFloat
     public var selectorHeight: CGFloat
-    public var labelTopPadding: CGFloat
+    public var itemTopPadding: CGFloat
     
     /**
      The distance between the top of the selector and the bottom
@@ -41,6 +41,16 @@ public struct YSSegmentedControlAppearance {
      Defaults to false.
      */
     public var selectorSpansLabelWidth: Bool
+    
+    /**
+     Whether or not the labels on the ends (first and last) float to the edges
+     or are centered within the item.
+     If set to `true`, then the labels float to the edges;
+     if set to `false`, then the labels are centered.
+     
+     Default value is `false`.
+     */
+    public var labelsOnEndsFloatToEdges: Bool
 }
 
 // MARK: - Control Item
@@ -53,7 +63,9 @@ class YSSegmentedControlItem: UIControl {
     
     private var willPress: YSSegmentedControlItemAction?
     private var didPress: YSSegmentedControlItemAction?
+    
     var label: UILabel!
+    let labelAlignment: NSTextAlignment
     
     // MARK: Init
     
@@ -61,18 +73,21 @@ class YSSegmentedControlItem: UIControl {
          text: String,
          appearance: YSSegmentedControlAppearance,
          willPress: YSSegmentedControlItemAction?,
-         didPress: YSSegmentedControlItemAction?) {
-        super.init(frame: frame)
+         didPress: YSSegmentedControlItemAction?,
+         labelAlignment: NSTextAlignment) {
         self.willPress = willPress
         self.didPress = didPress
+        self.labelAlignment = labelAlignment
+
+        super.init(frame: frame)
+
         
         commonInit()
-        label.textColor = appearance.textColor
-        label.font = appearance.font
-        label.text = text
+        label.attributedText = NSAttributedString(string: text, attributes: appearance.unselectedTextAttributes)
     }
     
     required init?(coder aDecoder: NSCoder) {
+        self.labelAlignment = .center
         super.init (coder: aDecoder)
         
         commonInit()
@@ -84,11 +99,22 @@ class YSSegmentedControlItem: UIControl {
         label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)
         
+        let attribute: NSLayoutAttribute
+        
+        switch labelAlignment {
+        case .left:
+            attribute = .leading
+        case .right:
+            attribute = .trailing
+        default:
+            attribute = .centerX
+        }
+        
         addConstraint(NSLayoutConstraint(item: label,
-                                         attribute: .centerX,
+                                         attribute: attribute,
                                          relatedBy: .equal,
                                          toItem: self,
-                                         attribute: .centerX,
+                                         attribute: attribute,
                                          multiplier: 1.0,
                                          constant: 0.0))
 
@@ -109,6 +135,17 @@ class YSSegmentedControlItem: UIControl {
                                                       options: [],
                                                       metrics: nil,
                                                       views: views))
+    }
+    
+    // MARK: UI Helpers
+    
+    func updateLabelAttributes(_ attributes: [String : Any]) {
+        guard let labelText = label.text else {
+            return
+        }
+        
+        label.attributedText = NSAttributedString(string: labelText,
+                                                  attributes: attributes)
     }
     
     // MARK: Events
@@ -193,7 +230,23 @@ public class YSSegmentedControl: UIView {
     private func draw() {
         reset()
         backgroundColor = appearance.backgroundColor
-        for title in titles {
+        for (index, title) in titles.enumerated() {
+            let labelAlignment: NSTextAlignment
+            
+            if appearance.labelsOnEndsFloatToEdges {
+                switch index {
+                case 0:
+                    labelAlignment = .left
+                case titles.count - 1:
+                    labelAlignment = .right
+                default:
+                    labelAlignment = .center
+                }
+            }
+            else {
+                labelAlignment = .center
+            }
+            
             let item = YSSegmentedControlItem(
                 frame: .zero,
                 text: title,
@@ -215,10 +268,12 @@ public class YSSegmentedControl: UIView {
                     weakSelf.selectItem(at: index, withAnimation: true)
                     weakSelf.action?(weakSelf, index)
                     weakSelf.delegate?.segmentedControl(weakSelf, didPressItemAt: index)
-            })
+                },
+                labelAlignment: labelAlignment)
             addSubview(item)
             items.append(item)
         }
+
         // bottom line
         bottomLine.backgroundColor = appearance.bottomLineColor.cgColor
         layer.addSublayer(bottomLine)
@@ -250,9 +305,9 @@ public class YSSegmentedControl: UIView {
         for item in items {
             item.frame = CGRect(
                 x: currentX,
-                y: appearance.labelTopPadding,
+                y: appearance.itemTopPadding,
                 width: width,
-                height: frame.size.height - appearance.labelTopPadding)
+                height: frame.size.height - appearance.itemTopPadding)
             currentX += width
         }
         
@@ -267,17 +322,16 @@ public class YSSegmentedControl: UIView {
         appearance = YSSegmentedControlAppearance(
             backgroundColor: .clear,
             selectedBackgroundColor: .clear,
-            textColor: .gray,
-            font: .systemFont(ofSize: 15),
-            selectedTextColor: .black,
-            selectedFont: .systemFont(ofSize: 15),
+            unselectedTextAttributes: [:],
+            selectedTextAttributes: [:],
             bottomLineColor: .black,
             selectorColor: .black,
             bottomLineHeight: 0.5,
             selectorHeight: 2,
-            labelTopPadding: 0,
+            itemTopPadding: 0,
             selectorOffsetFromLabel: nil,
-            selectorSpansLabelWidth: false)
+            selectorSpansLabelWidth: false,
+            labelsOnEndsFloatToEdges: false)
     }
     
     // MARK: Select
@@ -287,12 +341,10 @@ public class YSSegmentedControl: UIView {
         moveSelector(at: index, withAnimation: animation)
         for item in items {
             if item == items[index] {
-                item.label.textColor = appearance.selectedTextColor
-                item.label.font = appearance.selectedFont
+                item.updateLabelAttributes(appearance.selectedTextAttributes)
                 item.backgroundColor = appearance.selectedBackgroundColor
             } else {
-                item.label.textColor = appearance.textColor
-                item.label.font = appearance.font
+                item.updateLabelAttributes(appearance.unselectedTextAttributes)
                 item.backgroundColor = appearance.backgroundColor
             }
         }
