@@ -44,16 +44,16 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="selectorSpansFullItemWidth" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cj7-PA-8So">
-                                                    <rect key="frame" x="8" y="8" width="214" height="27.5"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="selectorSpansLabelWidth" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cj7-PA-8So">
+                                                    <rect key="frame" x="8" y="8" width="196.5" height="27.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YkY-hN-8dx">
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="YkY-hN-8dx">
                                                     <rect key="frame" x="318" y="6" width="51" height="31"/>
                                                     <connections>
-                                                        <action selector="didToggleSelectorSpansFullItemWidthSwitch:" destination="DNs-Uf-ScM" eventType="valueChanged" id="S4w-Ka-Spx"/>
+                                                        <action selector="didToggleselectorSpansLabelWidthSwitch:" destination="DNs-Uf-ScM" eventType="valueChanged" id="UuC-Wq-d8y"/>
                                                     </connections>
                                                 </switch>
                                             </subviews>
