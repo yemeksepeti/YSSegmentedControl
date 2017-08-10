@@ -159,7 +159,7 @@ class YSSegmentedControlItem: UIControl {
     
     private func update() {
         label.attributedText = NSAttributedString(string: viewState.title, attributes: viewState.titleAttributes)
-        labelTrailingConstraint?.constant = viewState.horizontalTrailingOffset
+        labelTrailingConstraint?.constant = -viewState.horizontalTrailingOffset
         
         backgroundColor = viewState.backgroundColor
         
