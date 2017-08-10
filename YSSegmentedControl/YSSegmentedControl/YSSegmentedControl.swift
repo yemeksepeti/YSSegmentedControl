@@ -206,7 +206,8 @@ public class YSSegmentedControl: UIView {
     private var selector = UIView()
     private var selectorHeightConstraint: NSLayoutConstraint?
 
-    private var bottomLine = CALayer()
+    private var bottomLine = UIView()
+    private var bottomLineHeightConstraint: NSLayoutConstraint?
     
     fileprivate var selectorLeadingConstraint: NSLayoutConstraint?
     fileprivate var selectorWidthConstraint: NSLayoutConstraint?
@@ -223,7 +224,25 @@ public class YSSegmentedControl: UIView {
         }
         
         // bottomLine
-        layer.addSublayer(bottomLine)
+        addSubview(bottomLine)
+        bottomLine.translatesAutoresizingMaskIntoConstraints = false
+        let views = ["bottomLine": bottomLine]
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[bottomLine]|",
+                                                      options: [],
+                                                      metrics: nil,
+                                                      views: views))
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[bottomLine]|",
+                                                      options: [],
+                                                      metrics: nil,
+                                                      views: views))
+        bottomLineHeightConstraint = NSLayoutConstraint(item: bottomLine,
+                                                        attribute: .height,
+                                                        relatedBy: .equal,
+                                                        toItem: nil,
+                                                        attribute: .notAnAttribute,
+                                                        multiplier: 1.0,
+                                                        constant: viewState?.bottomLineHeight ?? 0)
+        addConstraint(bottomLineHeightConstraint!)
         
         // selector
         addSubview(selector)
@@ -325,7 +344,8 @@ public class YSSegmentedControl: UIView {
         backgroundColor = viewState.backgroundColor
         
         // bottom line
-        bottomLine.backgroundColor = viewState.bottomLineColor.cgColor
+        bottomLineHeightConstraint?.constant = viewState.bottomLineHeight
+        bottomLine.backgroundColor = viewState.bottomLineColor
         
         // selector
         selectorHeightConstraint?.constant = viewState.selectorHeight
@@ -333,16 +353,6 @@ public class YSSegmentedControl: UIView {
         selectItem(at: selectedIndex, withAnimation: true)
         
         setNeedsLayout()
-    }
-    
-    public override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        bottomLine.frame = CGRect(
-            x: 0,
-            y: frame.size.height - viewState.bottomLineHeight,
-            width: frame.size.width,
-            height: viewState.bottomLineHeight)
     }
     
     // MARK: Select
