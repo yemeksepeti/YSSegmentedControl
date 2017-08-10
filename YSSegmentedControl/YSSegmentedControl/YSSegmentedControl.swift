@@ -44,7 +44,7 @@ class YSSegmentedControlItem: UIControl {
     private var willPress: YSSegmentedControlItemAction?
     private var didPress: YSSegmentedControlItemAction?
     
-    var label: UILabel!
+    let label = UILabel()
     let labelAlignment: NSTextAlignment
     
     // MARK: Init
@@ -74,7 +74,6 @@ class YSSegmentedControlItem: UIControl {
     }
     
     private func commonInit() {
-        label = UILabel()
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)
