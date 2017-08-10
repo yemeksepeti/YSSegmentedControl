@@ -102,8 +102,7 @@ class YSSegmentedControlItem: UIControl {
     
     init(frame: CGRect,
          willPress: YSSegmentedControlItemAction?,
-         didPress: YSSegmentedControlItemAction?,
-         labelAlignment: NSTextAlignment) {
+         didPress: YSSegmentedControlItemAction?) {
         self.willPress = willPress
         self.didPress = didPress
 
@@ -203,7 +202,10 @@ public class YSSegmentedControl: UIView {
     }
     
     var items = [YSSegmentedControlItem]()
+    
     var selector = UIView()
+    private var selectorHeightConstraint: NSLayoutConstraint?
+
     var bottomLine = CALayer()
     
     fileprivate var selectorLeadingConstraint: NSLayoutConstraint?
@@ -219,77 +221,115 @@ public class YSSegmentedControl: UIView {
         if let viewState = viewState {
             self.viewState = viewState
         }
+        
+        // bottomLine
+        layer.addSublayer(bottomLine)
+        
+        // selector
+        addSubview(selector)
+        selector.translatesAutoresizingMaskIntoConstraints = false
+        selectorHeightConstraint = NSLayoutConstraint(item: selector,
+                                                      attribute: .height,
+                                                      relatedBy: .equal,
+                                                      toItem: nil,
+                                                      attribute: .notAnAttribute,
+                                                      multiplier: 1.0,
+                                                      constant: viewState?.selectorHeight ?? 0)
+        addConstraint(selectorHeightConstraint!)
     }
     
     required public init? (coder aDecoder: NSCoder) {
         super.init (coder: aDecoder)
     }
     
-    // MARK: Draw
-    
-    private func reset() {
-        for sub in subviews {
-            let v = sub
-            v.removeFromSuperview()
-        }
-        
-        items.removeAll()
-    }
+    // MARK:- ViewState
     
     private func update(_ oldViewState: YSSegmentedControlViewState) {
-        reset()
-        backgroundColor = viewState.backgroundColor
-        for title in viewState.titles {
-            let labelAlignment: NSTextAlignment = .center
+        // If the number of titles have changed, re-add all of the items.
+        if oldViewState.titles.count != viewState.titles.count {
+            // Remove all items
+            items.forEach { $0.removeFromSuperview() }
+            items.removeAll()
             
-            let item = YSSegmentedControlItem(
-                frame: .zero,
-                willPress: { [weak self] segmentedControlItem in
-                    guard let weakSelf = self else {
-                        return
-                    }
-                    
-                    let index = weakSelf.items.index(of: segmentedControlItem)!
-                    weakSelf.delegate?.segmentedControl(weakSelf, willPressItemAt: index)
-                },
-                didPress: { [weak self] segmentedControlItem in
-                    guard let weakSelf = self else {
-                        return
-                    }
-                    
-                    let index = weakSelf.items.index(of: segmentedControlItem)!
-                    weakSelf.selectItem(at: index, withAnimation: true)
-                    weakSelf.action?(weakSelf, index)
-                    weakSelf.delegate?.segmentedControl(weakSelf, didPressItemAt: index)
-                },
-                labelAlignment: labelAlignment)
+            // Re-Add all items
+            for _ in viewState.titles {
+                let item = YSSegmentedControlItem(
+                    frame: .zero,
+                    willPress: { [weak self] segmentedControlItem in
+                        guard let weakSelf = self else {
+                            return
+                        }
+                        
+                        let index = weakSelf.items.index(of: segmentedControlItem)!
+                        weakSelf.delegate?.segmentedControl(weakSelf, willPressItemAt: index)
+                    },
+                    didPress: { [weak self] segmentedControlItem in
+                        guard let weakSelf = self else {
+                            return
+                        }
+                        
+                        let index = weakSelf.items.index(of: segmentedControlItem)!
+                        weakSelf.selectItem(at: index, withAnimation: true)
+                        weakSelf.action?(weakSelf, index)
+                        weakSelf.delegate?.segmentedControl(weakSelf, didPressItemAt: index)
+                })
+                
+                addSubview(item)
+                items.append(item)
+            }
+            
+            // Constrain all the items
+            for (index, item) in items.enumerated() {
+                item.translatesAutoresizingMaskIntoConstraints = false
 
+                // Horizontal constraints
+                
+                if index == 0 {
+                    addConstraint(NSLayoutConstraint(item: item,
+                                                     attribute: .leading,
+                                                     relatedBy: .equal,
+                                                     toItem: self,
+                                                     attribute: .leading,
+                                                     multiplier: 1.0,
+                                                     constant: 0.0))
+                }
+                else {
+                    let previousItem = items[index - 1]
+                    addConstraint(NSLayoutConstraint(item: item,
+                                                     attribute: .leading,
+                                                     relatedBy: .equal,
+                                                     toItem: previousItem,
+                                                     attribute: .trailing,
+                                                     multiplier: 1.0,
+                                                     constant: 0))
+                }
+                
+                // Vertical constraints
+                
+                let views = ["item": item]
+                addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[item]|", options: [], metrics: nil, views: views))
+            }
+        }
+        
+        // Update the states of all the items
+        assert(viewState.titles.count == items.count, "There was a different number of titles than items. These should always be in sync.")
+        
+        for (index, item) in items.enumerated() {
             var viewState = item.viewState
-            viewState.title = title
+            viewState.title = self.viewState.titles[index]
             viewState.horizontalTrailingOffset = self.viewState.offsetBetweenTitles
             item.viewState = viewState
-
-            addSubview(item)
-            items.append(item)
         }
-
+        
+        // Other viewState properties
+        backgroundColor = viewState.backgroundColor
+        
         // bottom line
         bottomLine.backgroundColor = viewState.bottomLineColor.cgColor
-        layer.addSublayer(bottomLine)
         
         // selector
-        selector.translatesAutoresizingMaskIntoConstraints = false
+        selectorHeightConstraint?.constant = viewState.selectorHeight
         selector.backgroundColor = viewState.selectorColor
-        addSubview(selector)
-        
-        addConstraint(NSLayoutConstraint(item: selector,
-                                         attribute: .height,
-                                         relatedBy: .equal,
-                                         toItem: nil,
-                                         attribute: .notAnAttribute,
-                                         multiplier: 1.0,
-                                         constant: viewState.selectorHeight))
-        
         selectItem(at: selectedIndex, withAnimation: true)
         
         setNeedsLayout()
@@ -297,18 +337,6 @@ public class YSSegmentedControl: UIView {
     
     public override func layoutSubviews() {
         super.layoutSubviews()
-        
-        let width = frame.size.width / CGFloat(viewState.titles.count)
-        var currentX: CGFloat = 0
-        
-        for item in items {
-            item.frame = CGRect(
-                x: currentX,
-                y: viewState.itemTopPadding,
-                width: width,
-                height: frame.size.height - viewState.itemTopPadding)
-            currentX += width
-        }
         
         bottomLine.frame = CGRect(
             x: 0,
