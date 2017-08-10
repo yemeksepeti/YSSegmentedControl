@@ -81,7 +81,6 @@ class YSSegmentedControlItem: UIControl {
     // MARK: Init
     
     init(frame: CGRect,
-         appearance: YSSegmentedControlAppearance,
          willPress: YSSegmentedControlItemAction?,
          didPress: YSSegmentedControlItemAction?,
          labelAlignment: NSTextAlignment) {
@@ -234,7 +233,6 @@ public class YSSegmentedControl: UIView {
             
             let item = YSSegmentedControlItem(
                 frame: .zero,
-                appearance: appearance,
                 willPress: { [weak self] segmentedControlItem in
                     guard let weakSelf = self else {
                         return
