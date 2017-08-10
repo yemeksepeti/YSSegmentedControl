@@ -8,9 +8,9 @@
 
 import UIKit
 
-// MARK: - Appearance
+// MARK:- ViewState
 
-public struct YSSegmentedControlAppearance {
+public struct YSSegmentedControlViewState {
     public var backgroundColor: UIColor
     public var selectedBackgroundColor: UIColor
     
@@ -37,6 +37,26 @@ public struct YSSegmentedControlAppearance {
      and its subsequent title's leading edge.
      */
     public var offsetBetweenTitles: CGFloat
+    
+    /**
+     The titles that show inside the segmented control.
+     */
+    public var titles: [String]
+    
+    init() {
+        backgroundColor = .clear
+        selectedBackgroundColor = .clear
+        unselectedTextAttributes = [:]
+        selectedTextAttributes = [:]
+        bottomLineColor = .black
+        selectorColor = .black
+        bottomLineHeight = 0.5
+        selectorHeight = 2
+        itemTopPadding = 0
+        selectorOffsetFromLabel = nil
+        offsetBetweenTitles = 48
+        titles = []
+    }
 }
 
 // MARK: - Control Item
@@ -176,20 +196,9 @@ public class YSSegmentedControl: UIView {
     
     private var selectedIndex = 0
     
-    public var appearance: YSSegmentedControlAppearance! {
+    public var viewState = YSSegmentedControlViewState() {
         didSet {
-            self.draw()
-        }
-    }
-    
-    public var titles: [String]! {
-        didSet {
-            if appearance == nil {
-                defaultAppearance()
-            }
-            else {
-                self.draw()
-            }
+            update(oldValue)
         }
     }
     
@@ -206,8 +215,7 @@ public class YSSegmentedControl: UIView {
     public init (frame: CGRect, titles: [String], action: YSSegmentedControlAction? = nil) {
         super.init (frame: frame)
         self.action = action
-        self.titles = titles
-        defaultAppearance()
+        self.viewState.titles = titles // TODO: Fix this. Make this initializer take a view state
     }
     
     required public init? (coder aDecoder: NSCoder) {
@@ -225,10 +233,10 @@ public class YSSegmentedControl: UIView {
         items.removeAll()
     }
     
-    private func draw() {
+    private func update(_ oldViewState: YSSegmentedControlViewState) {
         reset()
-        backgroundColor = appearance.backgroundColor
-        for title in titles {
+        backgroundColor = viewState.backgroundColor
+        for title in viewState.titles {
             let labelAlignment: NSTextAlignment = .center
             
             let item = YSSegmentedControlItem(
@@ -255,7 +263,7 @@ public class YSSegmentedControl: UIView {
 
             var viewState = item.viewState
             viewState.title = title
-            viewState.horizontalTrailingOffset = appearance.offsetBetweenTitles
+            viewState.horizontalTrailingOffset = self.viewState.offsetBetweenTitles
             item.viewState = viewState
 
             addSubview(item)
@@ -263,12 +271,12 @@ public class YSSegmentedControl: UIView {
         }
 
         // bottom line
-        bottomLine.backgroundColor = appearance.bottomLineColor.cgColor
+        bottomLine.backgroundColor = viewState.bottomLineColor.cgColor
         layer.addSublayer(bottomLine)
         
         // selector
         selector.translatesAutoresizingMaskIntoConstraints = false
-        selector.backgroundColor = appearance.selectorColor
+        selector.backgroundColor = viewState.selectorColor
         addSubview(selector)
         
         addConstraint(NSLayoutConstraint(item: selector,
@@ -277,7 +285,7 @@ public class YSSegmentedControl: UIView {
                                          toItem: nil,
                                          attribute: .notAnAttribute,
                                          multiplier: 1.0,
-                                         constant: appearance.selectorHeight))
+                                         constant: viewState.selectorHeight))
         
         selectItem(at: selectedIndex, withAnimation: true)
         
@@ -287,38 +295,23 @@ public class YSSegmentedControl: UIView {
     public override func layoutSubviews() {
         super.layoutSubviews()
         
-        let width = frame.size.width / CGFloat(titles.count)
+        let width = frame.size.width / CGFloat(viewState.titles.count)
         var currentX: CGFloat = 0
         
         for item in items {
             item.frame = CGRect(
                 x: currentX,
-                y: appearance.itemTopPadding,
+                y: viewState.itemTopPadding,
                 width: width,
-                height: frame.size.height - appearance.itemTopPadding)
+                height: frame.size.height - viewState.itemTopPadding)
             currentX += width
         }
         
         bottomLine.frame = CGRect(
             x: 0,
-            y: frame.size.height - appearance.bottomLineHeight,
+            y: frame.size.height - viewState.bottomLineHeight,
             width: frame.size.width,
-            height: appearance.bottomLineHeight)
-    }
-    
-    private func defaultAppearance() {
-        appearance = YSSegmentedControlAppearance(
-            backgroundColor: .clear,
-            selectedBackgroundColor: .clear,
-            unselectedTextAttributes: [:],
-            selectedTextAttributes: [:],
-            bottomLineColor: .black,
-            selectorColor: .black,
-            bottomLineHeight: 0.5,
-            selectorHeight: 2,
-            itemTopPadding: 0,
-            selectorOffsetFromLabel: nil,
-            offsetBetweenTitles: 48)
+            height: viewState.bottomLineHeight)
     }
     
     // MARK: Select
@@ -329,14 +322,14 @@ public class YSSegmentedControl: UIView {
         for item in items {
             if item == items[index] {
                 var viewState = item.viewState
-                viewState.titleAttributes = appearance.selectedTextAttributes
-                viewState.backgroundColor = appearance.selectedBackgroundColor
+                viewState.titleAttributes = self.viewState.selectedTextAttributes
+                viewState.backgroundColor = self.viewState.selectedBackgroundColor
                 item.viewState = viewState
             }
             else {
                 var viewState = item.viewState
-                viewState.titleAttributes = appearance.unselectedTextAttributes
-                viewState.backgroundColor = appearance.backgroundColor
+                viewState.titleAttributes = self.viewState.unselectedTextAttributes
+                viewState.backgroundColor = self.viewState.backgroundColor
                 item.viewState = viewState
             }
         }
@@ -379,7 +372,7 @@ public class YSSegmentedControl: UIView {
                                                      multiplier: 1.0,
                                                      constant: 0)
         
-        if let selectorOffsetFromLabel = appearance.selectorOffsetFromLabel {
+        if let selectorOffsetFromLabel = viewState.selectorOffsetFromLabel {
             selectorBottomConstraint = NSLayoutConstraint(item: selector,
                                                           attribute: .top,
                                                           relatedBy: .equal,
