@@ -18,6 +18,9 @@ class TableViewController: UITableViewController {
     
     @IBOutlet weak var newTitleTextField: UITextField!
     
+    @IBOutlet weak var offsetBewteenTitlesStepper: UIStepper!
+    @IBOutlet weak var offsetBetweenTitlesValueLabel: UILabel!
+    
     // MARK: Lifecycle
     
     let segmented = YSSegmentedControl(frame: .zero, titles: [])
@@ -64,6 +67,14 @@ class TableViewController: UITableViewController {
         segmented.appearance = appearance
     }
 
+    @IBAction func didChangeOffsetBetweenTitlesStepper(_ sender: UIStepper) {
+        offsetBetweenTitlesValueLabel.text = "\(sender.value)"
+
+        var appearance = segmented.appearance
+        appearance?.offsetBetweenTitles = CGFloat(sender.value)
+        segmented.appearance = appearance
+    }
+    
     // MARK: Helpers
     
     func updateAppearanceConfigurationUI() {
@@ -72,6 +83,10 @@ class TableViewController: UITableViewController {
         selectorOffsetFromLabelStepper.value = Double(segmented.appearance.selectorOffsetFromLabel ?? 0)
         selectorOffsetFromLabelSwitch.isOn = segmented.appearance.selectorOffsetFromLabel != nil
         selectorOffsetFromLabelValueLabel.text = "\(selectorOffsetFromLabelStepper.value)"
+        
+        offsetBewteenTitlesStepper.value = Double(segmented.appearance.offsetBetweenTitles)
+        offsetBetweenTitlesValueLabel.text = "\(offsetBewteenTitlesStepper.value)"
+        
     }
 }
 
