@@ -338,10 +338,6 @@ public class YSSegmentedControl: UIView {
                                                                 constant: 0))
                 }
                 
-                var viewState = item.viewState
-                viewState.horizontalTrailingOffset = self.viewState.offsetBetweenTitles
-                item.viewState = viewState
-                
                 if index == items.count - 1 {
                     scrollView.addConstraint(NSLayoutConstraint(item: item,
                                                                  attribute: .trailing,
@@ -350,11 +346,6 @@ public class YSSegmentedControl: UIView {
                                                                  attribute: .trailing,
                                                                  multiplier: 1.0,
                                                                  constant: 0.0))
-                    
-                    var viewState = item.viewState
-                    viewState.horizontalTrailingOffset = 0
-                    item.viewState = viewState
-                    
                 }
                 
                 // Vertical constraints
@@ -378,6 +369,14 @@ public class YSSegmentedControl: UIView {
         for (index, item) in items.enumerated() {
             var viewState = item.viewState
             viewState.title = self.viewState.titles[index]
+            
+            if index == items.count - 1 {
+                viewState.horizontalTrailingOffset = 0
+            }
+            else {
+                viewState.horizontalTrailingOffset = self.viewState.offsetBetweenTitles
+            }
+            
             item.viewState = viewState
         }
         
