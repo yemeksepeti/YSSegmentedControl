@@ -210,7 +210,7 @@ public class YSSegmentedControl: UIView {
     private func draw() {
         reset()
         backgroundColor = appearance.backgroundColor
-        for (index, title) in titles.enumerated() {
+        for title in titles {
             let labelAlignment: NSTextAlignment = .center
             
             let item = YSSegmentedControlItem(
