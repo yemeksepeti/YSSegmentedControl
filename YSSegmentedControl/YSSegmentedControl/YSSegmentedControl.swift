@@ -39,64 +39,82 @@ typealias YSSegmentedControlItemAction = (_ item: YSSegmentedControlItem) -> Voi
 
 class YSSegmentedControlItem: UIControl {
     
-    // MARK: Properties
+    // MARK:- State
+
+    struct ViewState {
+        var title: String
+        var titleAttributes: [String : Any]
+        var horizontalTrailingOffset: CGFloat
+        var backgroundColor: UIColor
+        
+        init() {
+            title = ""
+            titleAttributes = [:]
+            horizontalTrailingOffset = 48
+            backgroundColor = .clear
+        }
+    }
+    
+    var viewState = ViewState() {
+        didSet {
+            update()
+        }
+    }
+    
+    // MARK:- Actions
     
     private var willPress: YSSegmentedControlItemAction?
     private var didPress: YSSegmentedControlItemAction?
     
+    // MARK:- UI
+    
     let label = UILabel()
-    let labelAlignment: NSTextAlignment
+    
+    private var labelTrailingConstraint: NSLayoutConstraint?
     
     // MARK: Init
     
     init(frame: CGRect,
-         text: String,
          appearance: YSSegmentedControlAppearance,
          willPress: YSSegmentedControlItemAction?,
          didPress: YSSegmentedControlItemAction?,
          labelAlignment: NSTextAlignment) {
         self.willPress = willPress
         self.didPress = didPress
-        self.labelAlignment = labelAlignment
 
         super.init(frame: frame)
-
         
         commonInit()
-        label.attributedText = NSAttributedString(string: text, attributes: appearance.unselectedTextAttributes)
     }
     
     required init?(coder aDecoder: NSCoder) {
-        self.labelAlignment = .center
         super.init (coder: aDecoder)
         
         commonInit()
     }
     
     private func commonInit() {
-        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)
         
-        let attribute: NSLayoutAttribute
-        
-        switch labelAlignment {
-        case .left:
-            attribute = .leading
-        case .right:
-            attribute = .trailing
-        default:
-            attribute = .centerX
-        }
+        labelTrailingConstraint = NSLayoutConstraint(item: label,
+                                                     attribute: .trailing,
+                                                     relatedBy: .equal,
+                                                     toItem: self,
+                                                     attribute: .trailing,
+                                                     multiplier: 1.0,
+                                                     constant: 0)
+        addConstraint(labelTrailingConstraint!)
         
         addConstraint(NSLayoutConstraint(item: label,
-                                         attribute: attribute,
+                                         attribute: .leading,
                                          relatedBy: .equal,
                                          toItem: self,
-                                         attribute: attribute,
+                                         attribute: .leading,
                                          multiplier: 1.0,
                                          constant: 0.0))
-
+        
+        
         addConstraint(NSLayoutConstraint(item: label,
                                          attribute: .centerY,
                                          relatedBy: .equal,
@@ -106,25 +124,21 @@ class YSSegmentedControlItem: UIControl {
                                          constant: 0.0))
         
         let views: [String: Any] = ["label": label]
-        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(>=0)-[label]-(>=0)-|",
-                                                      options: [],
-                                                      metrics: nil,
-                                                      views: views))
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(>=0)-[label]-(>=0)-|",
                                                       options: [],
                                                       metrics: nil,
                                                       views: views))
     }
     
-    // MARK: UI Helpers
+    // MARK:- State
     
-    func updateLabelAttributes(_ attributes: [String : Any]) {
-        guard let labelText = label.text else {
-            return
-        }
+    private func update() {
+        label.attributedText = NSAttributedString(string: viewState.title, attributes: viewState.titleAttributes)
+        labelTrailingConstraint?.constant = viewState.horizontalTrailingOffset
         
-        label.attributedText = NSAttributedString(string: labelText,
-                                                  attributes: attributes)
+        backgroundColor = viewState.backgroundColor
+        
+        setNeedsLayout()
     }
     
     // MARK: Events
@@ -214,7 +228,6 @@ public class YSSegmentedControl: UIView {
             
             let item = YSSegmentedControlItem(
                 frame: .zero,
-                text: title,
                 appearance: appearance,
                 willPress: { [weak self] segmentedControlItem in
                     guard let weakSelf = self else {
@@ -235,6 +248,11 @@ public class YSSegmentedControl: UIView {
                     weakSelf.delegate?.segmentedControl(weakSelf, didPressItemAt: index)
                 },
                 labelAlignment: labelAlignment)
+
+            var viewState = item.viewState
+            viewState.title = title
+            item.viewState = viewState
+
             addSubview(item)
             items.append(item)
         }
@@ -304,11 +322,16 @@ public class YSSegmentedControl: UIView {
         moveSelector(at: index, withAnimation: animation)
         for item in items {
             if item == items[index] {
-                item.updateLabelAttributes(appearance.selectedTextAttributes)
-                item.backgroundColor = appearance.selectedBackgroundColor
-            } else {
-                item.updateLabelAttributes(appearance.unselectedTextAttributes)
-                item.backgroundColor = appearance.backgroundColor
+                var viewState = item.viewState
+                viewState.titleAttributes = appearance.selectedTextAttributes
+                viewState.backgroundColor = appearance.selectedBackgroundColor
+                item.viewState = viewState
+            }
+            else {
+                var viewState = item.viewState
+                viewState.titleAttributes = appearance.unselectedTextAttributes
+                viewState.backgroundColor = appearance.backgroundColor
+                item.viewState = viewState
             }
         }
     }
