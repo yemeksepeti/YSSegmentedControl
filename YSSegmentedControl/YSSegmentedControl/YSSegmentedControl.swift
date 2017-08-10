@@ -212,10 +212,13 @@ public class YSSegmentedControl: UIView {
     
     // MARK: Init
     
-    public init (frame: CGRect, titles: [String], action: YSSegmentedControlAction? = nil) {
+    public init (frame: CGRect, viewState: YSSegmentedControlViewState? = nil, action: YSSegmentedControlAction? = nil) {
         super.init (frame: frame)
         self.action = action
-        self.viewState.titles = titles // TODO: Fix this. Make this initializer take a view state
+        
+        if let viewState = viewState {
+            self.viewState = viewState
+        }
     }
     
     required public init? (coder aDecoder: NSCoder) {

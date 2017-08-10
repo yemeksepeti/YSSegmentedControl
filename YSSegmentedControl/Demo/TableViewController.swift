@@ -23,7 +23,7 @@ class TableViewController: UITableViewController {
     
     // MARK: Lifecycle
     
-    let segmented = YSSegmentedControl(frame: .zero, titles: [])
+    let segmented = YSSegmentedControl(frame: .zero)
     
     override func viewDidLoad() {
         super.viewDidLoad()
