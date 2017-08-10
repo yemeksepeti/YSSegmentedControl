@@ -201,12 +201,12 @@ public class YSSegmentedControl: UIView {
         }
     }
     
-    var items = [YSSegmentedControlItem]()
+    private var items = [YSSegmentedControlItem]()
     
-    var selector = UIView()
+    private var selector = UIView()
     private var selectorHeightConstraint: NSLayoutConstraint?
 
-    var bottomLine = CALayer()
+    private var bottomLine = CALayer()
     
     fileprivate var selectorLeadingConstraint: NSLayoutConstraint?
     fileprivate var selectorWidthConstraint: NSLayoutConstraint?
