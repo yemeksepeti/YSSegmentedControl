@@ -189,7 +189,7 @@ public typealias YSSegmentedControlAction = (_ segmentedControl: YSSegmentedCont
 
 public class YSSegmentedControl: UIView {
     
-    // MARK: Properties
+    // MARK:- Properties
     
     weak var delegate: YSSegmentedControlDelegate?
     public var action: YSSegmentedControlAction?
@@ -210,7 +210,7 @@ public class YSSegmentedControl: UIView {
     fileprivate var selectorWidthConstraint: NSLayoutConstraint?
     fileprivate var selectorBottomConstraint: NSLayoutConstraint?
     
-    // MARK: Init
+    // MARK:- Init
     
     public init (frame: CGRect, viewState: YSSegmentedControlViewState? = nil, action: YSSegmentedControlAction? = nil) {
         super.init (frame: frame)
