@@ -16,8 +16,6 @@ class TableViewController: UITableViewController {
     @IBOutlet weak var selectorOffsetFromLabelSwitch: UISwitch!
     @IBOutlet weak var selectorOffsetFromLabelValueLabel: UILabel!
     
-    @IBOutlet weak var labelsOnEndsFloatToEdgesSwitch: UISwitch!
-    
     @IBOutlet weak var newTitleTextField: UITextField!
     
     // MARK: Lifecycle
@@ -45,10 +43,10 @@ class TableViewController: UITableViewController {
         updateAppearanceConfigurationUI()
     }
     
-    @IBAction func didToggleselectorSpansLabelWidthSwitch(_ sender: UISwitch) {
-        var appearance = segmented.appearance
-        appearance?.selectorSpansLabelWidth = sender.isOn
-        segmented.appearance = appearance
+    // MARK:- Actions
+    
+    @IBAction func didTapResetButton(_ sender: UIButton) {
+        segmented.titles = []
     }
     
     @IBAction func didToggleSelectorOffsetFromLabelSwitch(_ sender: UISwitch) {
@@ -65,12 +63,6 @@ class TableViewController: UITableViewController {
         appearance?.selectorOffsetFromLabel = CGFloat(sender.value)
         segmented.appearance = appearance
     }
-    
-    @IBAction func didToggleLabelsOnEndsFloatToEdgesSwitch(_ sender: UISwitch) {
-        var appearance = segmented.appearance
-        appearance?.labelsOnEndsFloatToEdges = sender.isOn
-        segmented.appearance = appearance
-    }
 
     // MARK: Helpers
     
@@ -80,8 +72,6 @@ class TableViewController: UITableViewController {
         selectorOffsetFromLabelStepper.value = Double(segmented.appearance.selectorOffsetFromLabel ?? 0)
         selectorOffsetFromLabelSwitch.isOn = segmented.appearance.selectorOffsetFromLabel != nil
         selectorOffsetFromLabelValueLabel.text = "\(selectorOffsetFromLabelStepper.value)"
-        
-        labelsOnEndsFloatToEdgesSwitch.isOn = segmented.appearance.labelsOnEndsFloatToEdges
     }
 }
 

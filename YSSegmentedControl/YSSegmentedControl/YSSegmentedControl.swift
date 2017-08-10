@@ -31,26 +31,6 @@ public struct YSSegmentedControlAppearance {
      otherwise the selector will be this distance from the bottom of the label.
      */
     public var selectorOffsetFromLabel: CGFloat?
-    
-    /**
-     Whether or not the selector spans the full width of the
-     YSSegmentedControlItem's label.
-     If set to true, the selector will span the full width of the label;
-     if set to false, the selector will span the entire width of the item.
-     
-     Defaults to false.
-     */
-    public var selectorSpansLabelWidth: Bool
-    
-    /**
-     Whether or not the labels on the ends (first and last) float to the edges
-     or are centered within the item.
-     If set to `true`, then the labels float to the edges;
-     if set to `false`, then the labels are centered.
-     
-     Default value is `false`.
-     */
-    public var labelsOnEndsFloatToEdges: Bool
 }
 
 // MARK: - Control Item
@@ -231,21 +211,7 @@ public class YSSegmentedControl: UIView {
         reset()
         backgroundColor = appearance.backgroundColor
         for (index, title) in titles.enumerated() {
-            let labelAlignment: NSTextAlignment
-            
-            if appearance.labelsOnEndsFloatToEdges {
-                switch index {
-                case 0:
-                    labelAlignment = .left
-                case titles.count - 1:
-                    labelAlignment = .right
-                default:
-                    labelAlignment = .center
-                }
-            }
-            else {
-                labelAlignment = .center
-            }
+            let labelAlignment: NSTextAlignment = .center
             
             let item = YSSegmentedControlItem(
                 frame: .zero,
@@ -329,9 +295,7 @@ public class YSSegmentedControl: UIView {
             bottomLineHeight: 0.5,
             selectorHeight: 2,
             itemTopPadding: 0,
-            selectorOffsetFromLabel: nil,
-            selectorSpansLabelWidth: false,
-            labelsOnEndsFloatToEdges: false)
+            selectorOffsetFromLabel: nil)
     }
     
     // MARK: Select
@@ -369,14 +333,7 @@ public class YSSegmentedControl: UIView {
         
         let item = items[selectedIndex]
         
-        let horizontalConstrainingView: UIView
-        
-        if appearance.selectorSpansLabelWidth {
-            horizontalConstrainingView = item.label
-        }
-        else {
-            horizontalConstrainingView = item
-        }
+        let horizontalConstrainingView = item.label
         
         selectorLeadingConstraint = NSLayoutConstraint(item: selector,
                                                        attribute: .leading,
