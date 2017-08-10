@@ -203,6 +203,8 @@ public class YSSegmentedControl: UIView {
     
     private var items = [YSSegmentedControlItem]()
     
+    private var scrollView = UIScrollView()
+    
     private var selector = UIView()
     private var selectorHeightConstraint: NSLayoutConstraint?
 
@@ -226,7 +228,7 @@ public class YSSegmentedControl: UIView {
         // bottomLine
         addSubview(bottomLine)
         bottomLine.translatesAutoresizingMaskIntoConstraints = false
-        let views = ["bottomLine": bottomLine]
+        var views = ["bottomLine": bottomLine]
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[bottomLine]|",
                                                       options: [],
                                                       metrics: nil,
@@ -244,8 +246,20 @@ public class YSSegmentedControl: UIView {
                                                         constant: viewState?.bottomLineHeight ?? 0)
         addConstraint(bottomLineHeightConstraint!)
         
+        // scrollView
+        addSubview(scrollView)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        views = ["scrollView": scrollView]
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[scrollView]|",
+                                                      options: [],
+                                                      metrics: nil,
+                                                      views: views))
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[scrollView]|",
+                                                      options: [],
+                                                      metrics: nil,
+                                                      views: views))
         // selector
-        addSubview(selector)
+        scrollView.addSubview(selector)
         selector.translatesAutoresizingMaskIntoConstraints = false
         selectorHeightConstraint = NSLayoutConstraint(item: selector,
                                                       attribute: .height,
@@ -254,7 +268,7 @@ public class YSSegmentedControl: UIView {
                                                       attribute: .notAnAttribute,
                                                       multiplier: 1.0,
                                                       constant: viewState?.selectorHeight ?? 0)
-        addConstraint(selectorHeightConstraint!)
+        scrollView.addConstraint(selectorHeightConstraint!)
     }
     
     required public init? (coder aDecoder: NSCoder) {
@@ -293,7 +307,7 @@ public class YSSegmentedControl: UIView {
                         weakSelf.delegate?.segmentedControl(weakSelf, didPressItemAt: index)
                 })
                 
-                addSubview(item)
+                scrollView.addSubview(item)
                 items.append(item)
             }
             
@@ -304,29 +318,56 @@ public class YSSegmentedControl: UIView {
                 // Horizontal constraints
                 
                 if index == 0 {
-                    addConstraint(NSLayoutConstraint(item: item,
-                                                     attribute: .leading,
-                                                     relatedBy: .equal,
-                                                     toItem: self,
-                                                     attribute: .leading,
-                                                     multiplier: 1.0,
-                                                     constant: 0.0))
+                    scrollView.addConstraint(NSLayoutConstraint(item: item,
+                                                                attribute: .leading,
+                                                                relatedBy: .equal,
+                                                                toItem: scrollView,
+                                                                attribute: .leading,
+                                                                multiplier: 1.0,
+                                                                constant: 0.0))
                 }
                 else {
                     let previousItem = items[index - 1]
-                    addConstraint(NSLayoutConstraint(item: item,
-                                                     attribute: .leading,
-                                                     relatedBy: .equal,
-                                                     toItem: previousItem,
-                                                     attribute: .trailing,
-                                                     multiplier: 1.0,
-                                                     constant: 0))
+                    scrollView.addConstraint(NSLayoutConstraint(item: item,
+                                                                attribute: .leading,
+                                                                relatedBy: .equal,
+                                                                toItem: previousItem,
+                                                                attribute: .trailing,
+                                                                multiplier: 1.0,
+                                                                constant: 0))
+                }
+                
+                var viewState = item.viewState
+                viewState.horizontalTrailingOffset = self.viewState.offsetBetweenTitles
+                item.viewState = viewState
+                
+                if index == items.count - 1 {
+                    scrollView.addConstraint(NSLayoutConstraint(item: item,
+                                                                 attribute: .trailing,
+                                                                 relatedBy: .equal,
+                                                                 toItem: scrollView,
+                                                                 attribute: .trailing,
+                                                                 multiplier: 1.0,
+                                                                 constant: 0.0))
+                    
+                    var viewState = item.viewState
+                    viewState.horizontalTrailingOffset = 0
+                    item.viewState = viewState
+                    
                 }
                 
                 // Vertical constraints
                 
                 let views = ["item": item]
-                addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[item]|", options: [], metrics: nil, views: views))
+                scrollView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[item]|", options: [], metrics: nil, views: views))
+                // Need to add this height constraint because the scrollView won't stretch the label to the bottom
+                scrollView.addConstraint(NSLayoutConstraint(item: item,
+                                                            attribute: .height,
+                                                            relatedBy: .equal,
+                                                            toItem: scrollView,
+                                                            attribute: .height,
+                                                            multiplier: 1.0,
+                                                            constant: 0.0))
             }
         }
         
@@ -336,7 +377,6 @@ public class YSSegmentedControl: UIView {
         for (index, item) in items.enumerated() {
             var viewState = item.viewState
             viewState.title = self.viewState.titles[index]
-            viewState.horizontalTrailingOffset = self.viewState.offsetBetweenTitles
             item.viewState = viewState
         }
         
@@ -381,16 +421,16 @@ public class YSSegmentedControl: UIView {
             return
         }
         
-        layoutIfNeeded()
+        scrollView.layoutIfNeeded()
 
         if let selectorWidthConstraint = selectorWidthConstraint {
-            removeConstraint(selectorWidthConstraint)
+            scrollView.removeConstraint(selectorWidthConstraint)
         }
         if let selectorLeadingConstraint = selectorLeadingConstraint {
-            removeConstraint(selectorLeadingConstraint)
+            scrollView.removeConstraint(selectorLeadingConstraint)
         }
         if let selectorBottomConstraint = selectorBottomConstraint {
-            removeConstraint(selectorBottomConstraint)
+            scrollView.removeConstraint(selectorBottomConstraint)
         }
         
         let item = items[selectedIndex]
@@ -426,14 +466,14 @@ public class YSSegmentedControl: UIView {
             selectorBottomConstraint = NSLayoutConstraint(item: selector,
                                                           attribute: .bottom,
                                                           relatedBy: .equal,
-                                                          toItem: self,
+                                                          toItem: scrollView,
                                                           attribute: .bottom,
                                                           multiplier: 1.0,
                                                           constant: 0)
         }
         
         
-        addConstraints([selectorWidthConstraint!, selectorLeadingConstraint!, selectorBottomConstraint!])
+        scrollView.addConstraints([selectorWidthConstraint!, selectorLeadingConstraint!, selectorBottomConstraint!])
         
         UIView.animate(withDuration: animation ? 0.3 : 0,
                        delay: 0,
@@ -443,7 +483,7 @@ public class YSSegmentedControl: UIView {
                        animations: {
                         [unowned self] in
                         
-                        self.layoutIfNeeded()
+                        self.scrollView.layoutIfNeeded()
             },
                        completion: nil)
     }
