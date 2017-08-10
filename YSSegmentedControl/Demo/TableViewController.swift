@@ -18,6 +18,8 @@ class TableViewController: UITableViewController {
     
     @IBOutlet weak var labelsOnEndsFloatToEdgesSwitch: UISwitch!
     
+    @IBOutlet weak var newTitleTextField: UITextField!
+    
     // MARK: Lifecycle
     
     let segmented = YSSegmentedControl(frame: .zero, titles: [])
@@ -90,5 +92,18 @@ extension TableViewController: YSSegmentedControlDelegate {
     
     func segmentedControl(_ segmentedControl: YSSegmentedControl, didPressItemAt index: Int) {
         print ("[Delegate] segmented did press \(index)")
+    }
+}
+
+extension TableViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+
+        var titles = segmented.titles
+        titles?.append(textField.text ?? "")
+        segmented.titles = titles
+
+        textField.text = ""
+        return true
     }
 }

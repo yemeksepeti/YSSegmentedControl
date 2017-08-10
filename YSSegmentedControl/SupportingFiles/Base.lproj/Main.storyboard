@@ -140,6 +140,39 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="78" id="SSA-jP-SZZ">
+                                        <rect key="frame" x="0.0" y="164" width="375" height="78"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="SSA-jP-SZZ" id="ozb-k0-e3J">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="77.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add Additional Titles" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LM7-gf-Qer">
+                                                    <rect key="frame" x="8" y="8" width="157.5" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Title" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="6fh-Sl-k3T">
+                                                    <rect key="frame" x="8" y="37" width="359" height="32.5"/>
+                                                    <nil key="textColor"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <connections>
+                                                        <outlet property="delegate" destination="DNs-Uf-ScM" id="gez-QF-PPT"/>
+                                                    </connections>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="LM7-gf-Qer" firstAttribute="top" secondItem="ozb-k0-e3J" secondAttribute="topMargin" id="3Sr-fF-Evb"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="6fh-Sl-k3T" secondAttribute="trailing" id="GCV-XB-QfX"/>
+                                                <constraint firstItem="LM7-gf-Qer" firstAttribute="leading" secondItem="ozb-k0-e3J" secondAttribute="leadingMargin" id="J4y-QL-2Lx"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="6fh-Sl-k3T" secondAttribute="bottom" id="PDn-CV-RNI"/>
+                                                <constraint firstItem="6fh-Sl-k3T" firstAttribute="top" secondItem="LM7-gf-Qer" secondAttribute="bottom" constant="8" symbolic="YES" id="dOi-eH-H7g"/>
+                                                <constraint firstItem="6fh-Sl-k3T" firstAttribute="leading" secondItem="LM7-gf-Qer" secondAttribute="leading" id="q5X-X8-Lse"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -151,6 +184,7 @@
                     <navigationItem key="navigationItem" id="HIx-N7-63y"/>
                     <connections>
                         <outlet property="labelsOnEndsFloatToEdgesSwitch" destination="1rn-n8-Gim" id="1ca-ga-wCZ"/>
+                        <outlet property="newTitleTextField" destination="6fh-Sl-k3T" id="A7J-Gv-0m6"/>
                         <outlet property="selectorOffsetFromLabelStepper" destination="5TY-It-D6n" id="4Qn-Sm-zl7"/>
                         <outlet property="selectorOffsetFromLabelSwitch" destination="hRx-s7-rUd" id="rMH-ic-hkg"/>
                         <outlet property="selectorOffsetFromLabelValueLabel" destination="Mzl-12-ShV" id="Xg1-hd-VEJ"/>
