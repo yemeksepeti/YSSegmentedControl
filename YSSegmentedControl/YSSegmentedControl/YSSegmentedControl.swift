@@ -247,6 +247,7 @@ public class YSSegmentedControl: UIView {
         addConstraint(bottomLineHeightConstraint!)
         
         // scrollView
+        scrollView.showsHorizontalScrollIndicator = false
         addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         views = ["scrollView": scrollView]
