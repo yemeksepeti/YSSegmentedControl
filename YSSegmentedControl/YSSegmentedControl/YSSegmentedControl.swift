@@ -18,8 +18,8 @@ public struct YSSegmentedControlViewState {
     public var selectedTextAttributes: [String : Any]
     
     public var bottomLineColor: UIColor
-    public var selectorColor: UIColor
     public var bottomLineHeight: CGFloat
+    public var selectorColor: UIColor
     public var selectorHeight: CGFloat
     public var itemTopPadding: CGFloat
     
@@ -49,8 +49,8 @@ public struct YSSegmentedControlViewState {
         unselectedTextAttributes = [:]
         selectedTextAttributes = [:]
         bottomLineColor = .black
-        selectorColor = .black
         bottomLineHeight = 0.5
+        selectorColor = .black
         selectorHeight = 2
         itemTopPadding = 0
         selectorOffsetFromLabel = nil
