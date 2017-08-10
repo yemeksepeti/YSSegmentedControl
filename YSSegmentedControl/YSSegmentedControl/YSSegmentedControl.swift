@@ -31,6 +31,12 @@ public struct YSSegmentedControlAppearance {
      otherwise the selector will be this distance from the bottom of the label.
      */
     public var selectorOffsetFromLabel: CGFloat?
+    
+    /**
+     The horizontal distance between the trailing edge of each title
+     and its subsequent title's leading edge.
+     */
+    public var offsetBetweenTitles: CGFloat
 }
 
 // MARK: - Control Item
@@ -251,6 +257,7 @@ public class YSSegmentedControl: UIView {
 
             var viewState = item.viewState
             viewState.title = title
+            viewState.horizontalTrailingOffset = appearance.offsetBetweenTitles
             item.viewState = viewState
 
             addSubview(item)
@@ -312,7 +319,8 @@ public class YSSegmentedControl: UIView {
             bottomLineHeight: 0.5,
             selectorHeight: 2,
             itemTopPadding: 0,
-            selectorOffsetFromLabel: nil)
+            selectorOffsetFromLabel: nil,
+            offsetBetweenTitles: 48)
     }
     
     // MARK: Select
