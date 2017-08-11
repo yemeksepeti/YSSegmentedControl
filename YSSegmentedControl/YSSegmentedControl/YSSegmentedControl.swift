@@ -221,10 +221,6 @@ public class YSSegmentedControl: UIView {
         super.init (frame: frame)
         self.action = action
         
-        if let viewState = viewState {
-            self.viewState = viewState
-        }
-        
         // bottomLine
         addSubview(bottomLine)
         bottomLine.translatesAutoresizingMaskIntoConstraints = false
@@ -270,6 +266,10 @@ public class YSSegmentedControl: UIView {
                                                       multiplier: 1.0,
                                                       constant: viewState?.selectorHeight ?? 0)
         scrollView.addConstraint(selectorHeightConstraint!)
+        
+        if let viewState = viewState {
+            self.viewState = viewState
+        }
     }
     
     required public init? (coder aDecoder: NSCoder) {
