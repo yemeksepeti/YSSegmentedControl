@@ -221,10 +221,6 @@ public class YSSegmentedControl: UIView {
         super.init (frame: frame)
         self.action = action
         
-        if let viewState = viewState {
-            self.viewState = viewState
-        }
-        
         // bottomLine
         addSubview(bottomLine)
         bottomLine.translatesAutoresizingMaskIntoConstraints = false
@@ -270,6 +266,10 @@ public class YSSegmentedControl: UIView {
                                                       multiplier: 1.0,
                                                       constant: viewState?.selectorHeight ?? 0)
         scrollView.addConstraint(selectorHeightConstraint!)
+        
+        if let viewState = viewState {
+            self.viewState = viewState
+        }
     }
     
     required public init? (coder aDecoder: NSCoder) {
@@ -318,6 +318,7 @@ public class YSSegmentedControl: UIView {
 
                 // Horizontal constraints
                 
+                // First
                 if index == 0 {
                     scrollView.addConstraint(NSLayoutConstraint(item: item,
                                                                 attribute: .leading,
@@ -327,6 +328,7 @@ public class YSSegmentedControl: UIView {
                                                                 multiplier: 1.0,
                                                                 constant: 0.0))
                 }
+                // Middle or last
                 else {
                     let previousItem = items[index - 1]
                     scrollView.addConstraint(NSLayoutConstraint(item: item,
@@ -337,7 +339,7 @@ public class YSSegmentedControl: UIView {
                                                                 multiplier: 1.0,
                                                                 constant: 0))
                 }
-                
+                // Last
                 if index == items.count - 1 {
                     scrollView.addConstraint(NSLayoutConstraint(item: item,
                                                                  attribute: .trailing,
@@ -376,6 +378,8 @@ public class YSSegmentedControl: UIView {
             var viewState = item.viewState
             viewState.title = self.viewState.titles[index]
             
+            // Don't add horizontal trailing offset to the last one,
+            // otherwise there is unecessary scrolling.
             if index == items.count - 1 {
                 viewState.horizontalTrailingOffset = 0
             }
