@@ -412,7 +412,9 @@ public class YSSegmentedControl: UIView {
         self.selectedIndex = index
         moveSelector(at: index, withAnimation: animation)
         
-        assert(index < items.count, "index was out of bounds of items")
+        guard index < items.count else {
+            return
+        }
         
         // scroll to the selected item if its bounds are out of the scrollview
         let selectedItemFrame = items[index].frame
