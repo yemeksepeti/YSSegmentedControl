@@ -396,7 +396,8 @@ public class YSSegmentedControl: UIView {
         // selector
         selectorHeightConstraint?.constant = viewState.selectorHeight
         selector.backgroundColor = viewState.selectorColor
-        selectItem(at: selectedIndex, withAnimation: true)
+        
+        selectItem(at: selectedIndex, withAnimation: false)
         
         setNeedsLayout()
     }
