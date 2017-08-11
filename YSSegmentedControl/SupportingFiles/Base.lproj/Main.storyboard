@@ -142,8 +142,45 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="76" id="UYW-Yh-yAy">
+                                        <rect key="frame" x="0.0" y="196" width="375" height="76"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="UYW-Yh-yAy" id="nQc-ab-Vbg">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="75.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="bottomLineHeight" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dbk-Dh-JXa">
+                                                    <rect key="frame" x="8" y="8" width="138" height="22"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" stepValue="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="B7B-D7-KVS">
+                                                    <rect key="frame" x="8" y="38.5" width="94" height="29"/>
+                                                    <connections>
+                                                        <action selector="didChangeBottomLineHeigtStepper:" destination="DNs-Uf-ScM" eventType="valueChanged" id="Ba3-Ty-LTm"/>
+                                                    </connections>
+                                                </stepper>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kXB-Ho-zJj">
+                                                    <rect key="frame" x="110" y="43" width="42" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="kXB-Ho-zJj" firstAttribute="leading" secondItem="B7B-D7-KVS" secondAttribute="trailing" constant="8" id="8bR-MH-WUL"/>
+                                                <constraint firstItem="Dbk-Dh-JXa" firstAttribute="top" secondItem="nQc-ab-Vbg" secondAttribute="topMargin" id="AHi-va-6bg"/>
+                                                <constraint firstItem="kXB-Ho-zJj" firstAttribute="centerY" secondItem="B7B-D7-KVS" secondAttribute="centerY" id="Muv-Je-Ya0"/>
+                                                <constraint firstItem="B7B-D7-KVS" firstAttribute="top" secondItem="Dbk-Dh-JXa" secondAttribute="bottom" constant="8.5" id="Y6J-4S-GiU"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="B7B-D7-KVS" secondAttribute="bottom" id="bOn-q5-L98"/>
+                                                <constraint firstItem="Dbk-Dh-JXa" firstAttribute="leading" secondItem="nQc-ab-Vbg" secondAttribute="leadingMargin" id="g41-nP-8Zw"/>
+                                                <constraint firstItem="B7B-D7-KVS" firstAttribute="leading" secondItem="nQc-ab-Vbg" secondAttribute="leadingMargin" id="pOd-Q0-3eJ"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="78" id="SSA-jP-SZZ">
-                                        <rect key="frame" x="0.0" y="196" width="375" height="78"/>
+                                        <rect key="frame" x="0.0" y="272" width="375" height="78"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="SSA-jP-SZZ" id="ozb-k0-e3J">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="77.5"/>
@@ -185,6 +222,8 @@
                     </tableView>
                     <navigationItem key="navigationItem" id="HIx-N7-63y"/>
                     <connections>
+                        <outlet property="bottomLineHeightStepper" destination="B7B-D7-KVS" id="Acp-vh-Pno"/>
+                        <outlet property="bottomLineHeightValueLabel" destination="kXB-Ho-zJj" id="m6B-33-8lL"/>
                         <outlet property="newTitleTextField" destination="6fh-Sl-k3T" id="A7J-Gv-0m6"/>
                         <outlet property="offsetBetweenTitlesValueLabel" destination="hQV-vD-bPB" id="YyW-DF-c3F"/>
                         <outlet property="offsetBewteenTitlesStepper" destination="8ej-WI-ewh" id="3xN-kl-97F"/>

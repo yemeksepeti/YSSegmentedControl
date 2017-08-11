@@ -21,6 +21,9 @@ class TableViewController: UITableViewController {
     @IBOutlet weak var offsetBewteenTitlesStepper: UIStepper!
     @IBOutlet weak var offsetBetweenTitlesValueLabel: UILabel!
     
+    @IBOutlet weak var bottomLineHeightStepper: UIStepper!
+    @IBOutlet weak var bottomLineHeightValueLabel: UILabel!
+    
     // MARK: Lifecycle
     
     let segmented = YSSegmentedControl(frame: .zero)
@@ -78,6 +81,18 @@ class TableViewController: UITableViewController {
         segmented.viewState = viewState
     }
     
+    @IBAction func didChangeBottomLineHeigtStepper(_ sender: UIStepper) {
+        guard sender.value > 0 else {
+            return
+        }
+        
+        bottomLineHeightValueLabel.text = "\(sender.value)"
+        
+        var viewState = segmented.viewState
+        viewState.bottomLineHeight = CGFloat(sender.value)
+        segmented.viewState = viewState
+    }
+    
     // MARK: Helpers
     
     func updateAppearanceConfigurationUI() {
@@ -89,6 +104,9 @@ class TableViewController: UITableViewController {
         
         offsetBewteenTitlesStepper.value = Double(segmented.viewState.offsetBetweenTitles)
         offsetBetweenTitlesValueLabel.text = "\(offsetBewteenTitlesStepper.value)"
+        
+        bottomLineHeightStepper.value = Double(segmented.viewState.bottomLineHeight)
+        bottomLineHeightValueLabel.text = "\(bottomLineHeightStepper.value)"
         
     }
 }
