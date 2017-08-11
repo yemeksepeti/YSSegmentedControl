@@ -407,6 +407,19 @@ public class YSSegmentedControl: UIView {
     public func selectItem(at index: Int, withAnimation animation: Bool) {
         self.selectedIndex = index
         moveSelector(at: index, withAnimation: animation)
+        
+        assert(index < items.count, "index was out of bounds of items")
+        
+        // scroll to the selected item if its bounds are out of the scrollview
+        let selectedItemFrame = items[index].frame
+        let scrollViewContentOffsetRightPoint = scrollView.contentOffset.x + scrollView.bounds.size.width
+        let selectedItemFrameRightPoint = selectedItemFrame.origin.x + selectedItemFrame.size.width
+        
+        if selectedItemFrame.origin.x < scrollView.contentOffset.x ||
+            scrollViewContentOffsetRightPoint < selectedItemFrameRightPoint {
+            scrollView.scrollRectToVisible(selectedItemFrame, animated: animation)
+        }
+        
         for item in items {
             if item == items[index] {
                 var viewState = item.viewState
