@@ -361,6 +361,12 @@ public class YSSegmentedControl: UIView {
                                                             multiplier: 1.0,
                                                             constant: 0.0))
             }
+            
+            // If titles have been removed such the selectedIndex is out of
+            // bounds, bump it back by 1.
+            if selectedIndex >= viewState.titles.count {
+                selectedIndex = viewState.titles.count > 0 ? viewState.titles.count - 1 : 0
+            }
         }
         
         // Update the states of all the items
