@@ -39,6 +39,23 @@ public struct YSSegmentedControlViewState {
     public var offsetBetweenTitles: CGFloat
     
     /**
+     Whether or not the items should be evenly spaced horizontally,
+     or laid out sequentially, one directly after the other.
+     
+     If this is set to true, then the first item will be constrained
+     to the leading edge of the superview, and the last label will be
+     constrained to the trailing edge of the superview, and all labels in
+     between will be evenly spaced.
+     
+     If this is set to false, then the labels are laid out sequentially,
+     one directly after the other, and they scroll if they extend off the edge
+     of the superview.
+     
+     Defaults to false.
+     */
+    public var shouldEvenlySpaceItemsHorizontally: Bool
+    
+    /**
      The titles that show inside the segmented control.
      */
     public var titles: [String]
@@ -55,6 +72,7 @@ public struct YSSegmentedControlViewState {
         itemTopPadding = 0
         selectorOffsetFromLabel = nil
         offsetBetweenTitles = 48
+        shouldEvenlySpaceItemsHorizontally = false
         titles = []
     }
 }
