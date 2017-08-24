@@ -336,34 +336,16 @@ public class YSSegmentedControl: UIView {
             
             // First
             if index == 0 {
-                scrollView.addConstraint(NSLayoutConstraint(item: item,
-                                                            attribute: .leading,
-                                                            relatedBy: .equal,
-                                                            toItem: scrollView,
-                                                            attribute: .leading,
-                                                            multiplier: 1.0,
-                                                            constant: 0.0))
+                item.makeAttributesEqualToSuperview([.leading])
             }
             // Middle or last
             else {
                 let previousItem = items[index - 1]
-                scrollView.addConstraint(NSLayoutConstraint(item: item,
-                                                            attribute: .leading,
-                                                            relatedBy: .equal,
-                                                            toItem: previousItem,
-                                                            attribute: .trailing,
-                                                            multiplier: 1.0,
-                                                            constant: 0))
+                item.makeAttribute(.leading, equalToOtherView: previousItem, attribute: .trailing)
             }
             // Last
             if index == items.count - 1 {
-                scrollView.addConstraint(NSLayoutConstraint(item: item,
-                                                            attribute: .trailing,
-                                                            relatedBy: .equal,
-                                                            toItem: scrollView,
-                                                            attribute: .trailing,
-                                                            multiplier: 1.0,
-                                                            constant: 0.0))
+                item.makeAttributesEqualToSuperview([.trailing])
             }
             
             // Vertical constraints
@@ -371,13 +353,7 @@ public class YSSegmentedControl: UIView {
             let views = ["item": item]
             scrollView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[item]|", options: [], metrics: nil, views: views))
             // Need to add this height constraint because the scrollView won't stretch the label to the bottom
-            scrollView.addConstraint(NSLayoutConstraint(item: item,
-                                                        attribute: .height,
-                                                        relatedBy: .equal,
-                                                        toItem: scrollView,
-                                                        attribute: .height,
-                                                        multiplier: 1.0,
-                                                        constant: 0.0))
+            item.makeAttributesEqualToSuperview([.height])
         }
     }
     
