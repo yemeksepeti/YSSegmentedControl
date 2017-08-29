@@ -58,6 +58,7 @@ class TableViewController: UITableViewController {
     
     @IBAction func didTapResetButton(_ sender: UIButton) {
         segmented.viewState = YSSegmentedControlViewState()
+        updateAppearanceConfigurationUI()
     }
     
     @IBAction func didToggleSelectorOffsetFromLabelSwitch(_ sender: UISwitch) {
