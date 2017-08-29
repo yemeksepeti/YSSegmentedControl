@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Wwv-lb-7V5">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Wwv-lb-7V5">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -212,6 +212,35 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="cW8-m5-T92">
+                                        <rect key="frame" x="0.0" y="350" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="cW8-m5-T92" id="IOp-cM-xNS">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="shouldEvenlySpaceItemsHorizontally" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ayd-t9-qaS">
+                                                    <rect key="frame" x="8" y="8" width="283" height="27.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Rdw-kH-LFh">
+                                                    <rect key="frame" x="318" y="6" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="didToggleShouldEvenlySpaceItemsHorizontallySwitch:" destination="DNs-Uf-ScM" eventType="valueChanged" id="Av2-hf-3wr"/>
+                                                    </connections>
+                                                </switch>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Ayd-t9-qaS" firstAttribute="top" secondItem="IOp-cM-xNS" secondAttribute="topMargin" id="8pB-CE-N51"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="Ayd-t9-qaS" secondAttribute="bottom" id="KG6-Fc-8va"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="Rdw-kH-LFh" secondAttribute="trailing" id="QOa-L9-6fH"/>
+                                                <constraint firstItem="Rdw-kH-LFh" firstAttribute="centerY" secondItem="Ayd-t9-qaS" secondAttribute="centerY" id="bvk-sl-S0g"/>
+                                                <constraint firstItem="Ayd-t9-qaS" firstAttribute="leading" secondItem="IOp-cM-xNS" secondAttribute="leadingMargin" id="j6S-7p-xTw"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -230,6 +259,7 @@
                         <outlet property="selectorOffsetFromLabelStepper" destination="5TY-It-D6n" id="4Qn-Sm-zl7"/>
                         <outlet property="selectorOffsetFromLabelSwitch" destination="hRx-s7-rUd" id="rMH-ic-hkg"/>
                         <outlet property="selectorOffsetFromLabelValueLabel" destination="Mzl-12-ShV" id="Xg1-hd-VEJ"/>
+                        <outlet property="shouldEvenlySpaceItemsHorizontallySwitch" destination="Rdw-kH-LFh" id="mnJ-g9-v3k"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Cig-mt-BGt" userLabel="First Responder" sceneMemberID="firstResponder"/>

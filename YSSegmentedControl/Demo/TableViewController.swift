@@ -24,6 +24,8 @@ class TableViewController: UITableViewController {
     @IBOutlet weak var bottomLineHeightStepper: UIStepper!
     @IBOutlet weak var bottomLineHeightValueLabel: UILabel!
     
+    @IBOutlet weak var shouldEvenlySpaceItemsHorizontallySwitch: UISwitch!
+    
     // MARK: Lifecycle
     
     let segmented = YSSegmentedControl(frame: .zero)
@@ -56,6 +58,7 @@ class TableViewController: UITableViewController {
     
     @IBAction func didTapResetButton(_ sender: UIButton) {
         segmented.viewState = YSSegmentedControlViewState()
+        updateAppearanceConfigurationUI()
     }
     
     @IBAction func didToggleSelectorOffsetFromLabelSwitch(_ sender: UISwitch) {
@@ -93,6 +96,12 @@ class TableViewController: UITableViewController {
         segmented.viewState = viewState
     }
     
+    @IBAction func didToggleShouldEvenlySpaceItemsHorizontallySwitch(_ sender: UISwitch) {
+        var viewState = segmented.viewState
+        viewState.shouldEvenlySpaceItemsHorizontally = sender.isOn
+        segmented.viewState = viewState
+    }
+    
     // MARK: Helpers
     
     func updateAppearanceConfigurationUI() {
@@ -108,6 +117,7 @@ class TableViewController: UITableViewController {
         bottomLineHeightStepper.value = Double(segmented.viewState.bottomLineHeight)
         bottomLineHeightValueLabel.text = "\(bottomLineHeightStepper.value)"
         
+        shouldEvenlySpaceItemsHorizontallySwitch.isOn = segmented.viewState.shouldEvenlySpaceItemsHorizontally
     }
 }
 
