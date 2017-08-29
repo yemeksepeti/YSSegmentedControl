@@ -452,8 +452,12 @@ public class YSSegmentedControl: UIView {
             var viewState = item.viewState
             viewState.title = self.viewState.titles[index]
             
-            // Don't add horizontal trailing offset to the last one,
-            // otherwise there is unecessary scrolling.
+            /**
+             If shouldEvenlySpaceItemsHorizontally is set to true, don't add
+             any trailing offset, as we want the items to be evenly spaced.
+             Or, if that is set ot false, then don't add horizontal trailing
+             offset to the last one, otherwise there is potentially unecessary scrolling.
+             */
             if self.viewState.shouldEvenlySpaceItemsHorizontally ||
                 index == items.count - 1 {
                 viewState.horizontalTrailingOffset = 0
