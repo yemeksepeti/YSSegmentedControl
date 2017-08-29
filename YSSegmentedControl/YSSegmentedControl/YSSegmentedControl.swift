@@ -8,9 +8,9 @@
 
 import UIKit
 
-// MARK: - Appearance
+// MARK:- ViewState
 
-public struct YSSegmentedControlAppearance {
+public struct YSSegmentedControlViewState {
     public var backgroundColor: UIColor
     public var selectedBackgroundColor: UIColor
     
@@ -18,8 +18,8 @@ public struct YSSegmentedControlAppearance {
     public var selectedTextAttributes: [String : Any]
     
     public var bottomLineColor: UIColor
-    public var selectorColor: UIColor
     public var bottomLineHeight: CGFloat
+    public var selectorColor: UIColor
     public var selectorHeight: CGFloat
     public var itemTopPadding: CGFloat
     
@@ -33,22 +33,48 @@ public struct YSSegmentedControlAppearance {
     public var selectorOffsetFromLabel: CGFloat?
     
     /**
-     Whether or not the selector spans the full width of the
-     YSSegmentedControlItem.
-     If set to true, the selector will span the entire width of the item;
-     if set to false, the selector will span the entire width of the label.
+     The horizontal distance between the trailing edge of each title
+     and its subsequent title's leading edge.
      */
-    public var selectorSpansFullItemWidth: Bool
+    public var offsetBetweenTitles: CGFloat
     
     /**
-     Whether or not the labels on the ends (first and last) float to the edges
-     or are centered within the item.
-     If set to `true`, then the labels float to the edges;
-     if set to `false`, then the labels are centered.
+     Whether or not the items should be evenly spaced horizontally,
+     or laid out sequentially, one directly after the other.
      
-     Default value is `false`.
+     If this is set to true, then the first item will be constrained
+     to the leading edge of the superview, and the last label will be
+     constrained to the trailing edge of the superview, and all labels in
+     between will be evenly spaced.
+     
+     If this is set to false, then the labels are laid out sequentially,
+     one directly after the other, and they scroll if they extend off the edge
+     of the superview.
+     
+     Defaults to false.
      */
-    public var labelsOnEndsFloatToEdges: Bool
+    public var shouldEvenlySpaceItemsHorizontally: Bool
+    
+    /**
+     The titles that show inside the segmented control.
+     */
+    public var titles: [String]
+    
+    init() {
+        backgroundColor = .clear
+        selectedBackgroundColor = .clear
+        unselectedTextAttributes = [:]
+        selectedTextAttributes = [:]
+        bottomLineColor = .black
+        bottomLineHeight = 0.5
+        selectorColor = .black
+        selectorHeight = 2
+        itemTopPadding = 0
+        selectorOffsetFromLabel = nil
+        offsetBetweenTitles = 48
+        shouldEvenlySpaceItemsHorizontally = false
+        titles = []
+    }
 }
 
 // MARK: - Control Item
@@ -57,65 +83,80 @@ typealias YSSegmentedControlItemAction = (_ item: YSSegmentedControlItem) -> Voi
 
 class YSSegmentedControlItem: UIControl {
     
-    // MARK: Properties
+    // MARK:- State
+
+    struct ViewState {
+        var title: String
+        var titleAttributes: [String : Any]
+        var horizontalTrailingOffset: CGFloat
+        var backgroundColor: UIColor
+        
+        init() {
+            title = ""
+            titleAttributes = [:]
+            horizontalTrailingOffset = 48
+            backgroundColor = .clear
+        }
+    }
+    
+    var viewState = ViewState() {
+        didSet {
+            update()
+        }
+    }
+    
+    // MARK:- Actions
     
     private var willPress: YSSegmentedControlItemAction?
     private var didPress: YSSegmentedControlItemAction?
     
-    var label: UILabel!
-    let labelAlignment: NSTextAlignment
+    // MARK:- UI
+    
+    let label = UILabel()
+    
+    private var labelTrailingConstraint: NSLayoutConstraint?
     
     // MARK: Init
     
     init(frame: CGRect,
-         text: String,
-         appearance: YSSegmentedControlAppearance,
          willPress: YSSegmentedControlItemAction?,
-         didPress: YSSegmentedControlItemAction?,
-         labelAlignment: NSTextAlignment) {
+         didPress: YSSegmentedControlItemAction?) {
         self.willPress = willPress
         self.didPress = didPress
-        self.labelAlignment = labelAlignment
 
         super.init(frame: frame)
-
         
         commonInit()
-        label.attributedText = NSAttributedString(string: text, attributes: appearance.unselectedTextAttributes)
     }
     
     required init?(coder aDecoder: NSCoder) {
-        self.labelAlignment = .center
         super.init (coder: aDecoder)
         
         commonInit()
     }
     
     private func commonInit() {
-        label = UILabel()
-        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)
         
-        let attribute: NSLayoutAttribute
-        
-        switch labelAlignment {
-        case .left:
-            attribute = .leading
-        case .right:
-            attribute = .trailing
-        default:
-            attribute = .centerX
-        }
+        labelTrailingConstraint = NSLayoutConstraint(item: label,
+                                                     attribute: .trailing,
+                                                     relatedBy: .equal,
+                                                     toItem: self,
+                                                     attribute: .trailing,
+                                                     multiplier: 1.0,
+                                                     constant: 0)
+        addConstraint(labelTrailingConstraint!)
         
         addConstraint(NSLayoutConstraint(item: label,
-                                         attribute: attribute,
+                                         attribute: .leading,
                                          relatedBy: .equal,
                                          toItem: self,
-                                         attribute: attribute,
+                                         attribute: .leading,
                                          multiplier: 1.0,
                                          constant: 0.0))
-
+        
+        
         addConstraint(NSLayoutConstraint(item: label,
                                          attribute: .centerY,
                                          relatedBy: .equal,
@@ -125,25 +166,21 @@ class YSSegmentedControlItem: UIControl {
                                          constant: 0.0))
         
         let views: [String: Any] = ["label": label]
-        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(>=0)-[label]-(>=0)-|",
-                                                      options: [],
-                                                      metrics: nil,
-                                                      views: views))
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(>=0)-[label]-(>=0)-|",
                                                       options: [],
                                                       metrics: nil,
                                                       views: views))
     }
     
-    // MARK: UI Helpers
+    // MARK:- State
     
-    func updateLabelAttributes(_ attributes: [String : Any]) {
-        guard let labelText = label.text else {
-            return
-        }
+    private func update() {
+        label.attributedText = NSAttributedString(string: viewState.title, attributes: viewState.titleAttributes)
+        labelTrailingConstraint?.constant = -viewState.horizontalTrailingOffset
         
-        label.attributedText = NSAttributedString(string: labelText,
-                                                  attributes: attributes)
+        backgroundColor = viewState.backgroundColor
+        
+        setNeedsLayout()
     }
     
     // MARK: Events
@@ -169,86 +206,133 @@ public typealias YSSegmentedControlAction = (_ segmentedControl: YSSegmentedCont
 
 public class YSSegmentedControl: UIView {
     
-    // MARK: Properties
+    // MARK:- Properties
     
     weak var delegate: YSSegmentedControlDelegate?
     public var action: YSSegmentedControlAction?
     
     private var selectedIndex = 0
     
-    public var appearance: YSSegmentedControlAppearance! {
+    public var viewState = YSSegmentedControlViewState() {
         didSet {
-            self.draw()
+            update(oldValue)
         }
     }
     
-    public var titles: [String]! {
-        didSet {
-            if appearance == nil {
-                defaultAppearance()
-            }
-            else {
-                self.draw()
-            }
-        }
-    }
+    private var items = [YSSegmentedControlItem]()
     
-    var items = [YSSegmentedControlItem]()
-    var selector = UIView()
-    var bottomLine = CALayer()
+    /**
+     Array of all spacer views that are used to evenly space out the items
+     when shouldEvenlySpaceItemsHorizontally is set to true.
+     */
+    private var spacerViews = [UIView]()
+    
+    private var scrollView = UIScrollView()
+    
+    private var selector = UIView()
+    private var selectorHeightConstraint: NSLayoutConstraint?
+
+    private var bottomLine = UIView()
+    private var bottomLineHeightConstraint: NSLayoutConstraint?
     
     fileprivate var selectorLeadingConstraint: NSLayoutConstraint?
     fileprivate var selectorWidthConstraint: NSLayoutConstraint?
     fileprivate var selectorBottomConstraint: NSLayoutConstraint?
     
-    // MARK: Init
+    /**
+     A view to horizontally constrain the scrollView to have
+     equal width to its superview.
+     
+     This is used when shouldEvenlySpaceItemsHorizontally is set to true
+     so that the width of the scrollView is fixed so that we can add
+     horizontal spacer views.
+     */
+    fileprivate let horizontalScrollViewConstrainingView = UIView()
     
-    public init (frame: CGRect, titles: [String], action: YSSegmentedControlAction? = nil) {
+    // MARK:- Init
+    
+    public init (frame: CGRect, viewState: YSSegmentedControlViewState? = nil, action: YSSegmentedControlAction? = nil) {
         super.init (frame: frame)
         self.action = action
-        self.titles = titles
-        defaultAppearance()
+        
+        // bottomLine
+        addSubview(bottomLine)
+        bottomLine.translatesAutoresizingMaskIntoConstraints = false
+        var views = ["bottomLine": bottomLine]
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[bottomLine]|",
+                                                      options: [],
+                                                      metrics: nil,
+                                                      views: views))
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[bottomLine]|",
+                                                      options: [],
+                                                      metrics: nil,
+                                                      views: views))
+        bottomLineHeightConstraint = NSLayoutConstraint(item: bottomLine,
+                                                        attribute: .height,
+                                                        relatedBy: .equal,
+                                                        toItem: nil,
+                                                        attribute: .notAnAttribute,
+                                                        multiplier: 1.0,
+                                                        constant: viewState?.bottomLineHeight ?? 0)
+        addConstraint(bottomLineHeightConstraint!)
+        
+        // scrollView
+        scrollView.showsHorizontalScrollIndicator = false
+        addSubview(scrollView)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        views = ["scrollView": scrollView]
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[scrollView]|",
+                                                      options: [],
+                                                      metrics: nil,
+                                                      views: views))
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[scrollView]|",
+                                                      options: [],
+                                                      metrics: nil,
+                                                      views: views))
+        // selector
+        scrollView.addSubview(selector)
+        selector.translatesAutoresizingMaskIntoConstraints = false
+        selectorHeightConstraint = NSLayoutConstraint(item: selector,
+                                                      attribute: .height,
+                                                      relatedBy: .equal,
+                                                      toItem: nil,
+                                                      attribute: .notAnAttribute,
+                                                      multiplier: 1.0,
+                                                      constant: viewState?.selectorHeight ?? 0)
+        scrollView.addConstraint(selectorHeightConstraint!)
+        
+        if let viewState = viewState {
+            self.viewState = viewState
+        }
     }
     
     required public init? (coder aDecoder: NSCoder) {
         super.init (coder: aDecoder)
     }
     
-    // MARK: Draw
+    // MARK:- ViewState
     
-    private func reset() {
-        for sub in subviews {
-            let v = sub
-            v.removeFromSuperview()
-        }
-        
+    /**
+     Removes all the items and their associated views (such as spacer views
+     and other constraining views) from the scrollView.
+     */
+    private func removeItemsAndAssociatedViews() {
+        items.forEach { $0.removeFromSuperview() }
         items.removeAll()
+        spacerViews.forEach { $0.removeFromSuperview() }
+        spacerViews.removeAll()
+        horizontalScrollViewConstrainingView.removeFromSuperview()
     }
     
-    private func draw() {
-        reset()
-        backgroundColor = appearance.backgroundColor
-        for (index, title) in titles.enumerated() {
-            let labelAlignment: NSTextAlignment
-            
-            if appearance.labelsOnEndsFloatToEdges {
-                switch index {
-                case 0:
-                    labelAlignment = .left
-                case titles.count - 1:
-                    labelAlignment = .right
-                default:
-                    labelAlignment = .center
-                }
-            }
-            else {
-                labelAlignment = .center
-            }
-            
+    /**
+     Lays out all of the YSSegmentedControlItems by adding them to the subview,
+     and then constrainign them properly based on the state).
+     */
+    private func layoutItems() {
+        // Re-Add all items
+        for _ in viewState.titles {
             let item = YSSegmentedControlItem(
                 frame: .zero,
-                text: title,
-                appearance: appearance,
                 willPress: { [weak self] segmentedControlItem in
                     guard let weakSelf = self else {
                         return
@@ -266,70 +350,139 @@ public class YSSegmentedControl: UIView {
                     weakSelf.selectItem(at: index, withAnimation: true)
                     weakSelf.action?(weakSelf, index)
                     weakSelf.delegate?.segmentedControl(weakSelf, didPressItemAt: index)
-                },
-                labelAlignment: labelAlignment)
-            addSubview(item)
+            })
+            
+            scrollView.addSubview(item)
             items.append(item)
         }
 
-        // bottom line
-        bottomLine.backgroundColor = appearance.bottomLineColor.cgColor
-        layer.addSublayer(bottomLine)
-        
-        // selector
-        selector.translatesAutoresizingMaskIntoConstraints = false
-        selector.backgroundColor = appearance.selectorColor
-        addSubview(selector)
-        
-        addConstraint(NSLayoutConstraint(item: selector,
-                                         attribute: .height,
-                                         relatedBy: .equal,
-                                         toItem: nil,
-                                         attribute: .notAnAttribute,
-                                         multiplier: 1.0,
-                                         constant: appearance.selectorHeight))
-        
-        selectItem(at: selectedIndex, withAnimation: true)
-        
-        setNeedsLayout()
+        if viewState.shouldEvenlySpaceItemsHorizontally {
+            scrollView.addSubview(horizontalScrollViewConstrainingView)
+            
+            _ = horizontalScrollViewConstrainingView.makeConstraint(for: .height, equalTo: 0)
+            
+            addConstraint(NSLayoutConstraint(item: horizontalScrollViewConstrainingView,
+                                             attribute: .width,
+                                             relatedBy: .equal,
+                                             toItem: self,
+                                             attribute: .width,
+                                             multiplier: 1.0,
+                                             constant: 0.0))
+            
+            horizontalScrollViewConstrainingView.makeAttributesEqualToSuperview([.top])
+            horizontalScrollViewConstrainingView.makeAttributesEqualToSuperview([.leading, .trailing])
+        }
+
+        // Constrain all the items
+        for (index, item) in items.enumerated() {
+            item.translatesAutoresizingMaskIntoConstraints = false
+            
+            // Horizontal constraints
+            
+            // First
+            if index == 0 {
+                item.makeAttributesEqualToSuperview([.leading])
+            }
+            // Middle or last
+            else {
+                let previousItem = items[index - 1]
+                
+                if viewState.shouldEvenlySpaceItemsHorizontally {
+                    let newSpacerView = UIView()
+                    newSpacerView.translatesAutoresizingMaskIntoConstraints = false
+                    scrollView.addSubview(newSpacerView)
+                    spacerViews.append(newSpacerView)
+                    
+                    newSpacerView.makeAttribute(.leading, equalToOtherView: previousItem, attribute: .trailing)
+                    newSpacerView.makeAttribute(.trailing, equalToOtherView: item, attribute: .leading)
+                    _ = newSpacerView.makeConstraint(for: .height, equalTo: 0)
+                    newSpacerView.makeAttribute(.centerY, equalToOtherView: previousItem, attribute: .centerY)
+                    scrollView.addConstraint(NSLayoutConstraint(item: newSpacerView,
+                                                                attribute: .width,
+                                                                relatedBy: .greaterThanOrEqual,
+                                                                toItem: nil,
+                                                                attribute: .notAnAttribute,
+                                                                multiplier: 1.0,
+                                                                constant: 10))
+                    
+                    if spacerViews.count > 1 {
+                        let previousSpacerView = spacerViews[spacerViews.count - 2]
+                        newSpacerView.makeAttribute(.width, equalToOtherView: previousSpacerView, attribute: .width)
+                    }
+                }
+                else {
+                    item.makeAttribute(.leading, equalToOtherView: previousItem, attribute: .trailing)
+                }
+            }
+            
+            // Last
+            if index == items.count - 1 {
+                item.makeAttributesEqualToSuperview([.trailing])
+            }
+            
+            // Vertical constraints
+            
+            let views = ["item": item]
+            scrollView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[item]|", options: [], metrics: nil, views: views))
+            // Need to add this height constraint because the scrollView won't stretch the label to the bottom
+            item.makeAttributesEqualToSuperview([.height])
+        }
     }
     
-    public override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        let width = frame.size.width / CGFloat(titles.count)
-        var currentX: CGFloat = 0
-        
-        for item in items {
-            item.frame = CGRect(
-                x: currentX,
-                y: appearance.itemTopPadding,
-                width: width,
-                height: frame.size.height - appearance.itemTopPadding)
-            currentX += width
+    private func update(_ oldViewState: YSSegmentedControlViewState) {
+        // If the number of titles have changed, re-add all of the items.
+        if oldViewState.titles.count != viewState.titles.count ||
+            oldViewState.shouldEvenlySpaceItemsHorizontally != viewState.shouldEvenlySpaceItemsHorizontally {
+            
+            // Remove all items
+            removeItemsAndAssociatedViews()
+            layoutItems()
+            
+            // If titles have been removed such the selectedIndex is out of
+            // bounds, bump it back by 1.
+            if selectedIndex >= viewState.titles.count {
+                selectedIndex = viewState.titles.count > 0 ? viewState.titles.count - 1 : 0
+            }
         }
         
-        bottomLine.frame = CGRect(
-            x: 0,
-            y: frame.size.height - appearance.bottomLineHeight,
-            width: frame.size.width,
-            height: appearance.bottomLineHeight)
-    }
-    
-    private func defaultAppearance() {
-        appearance = YSSegmentedControlAppearance(
-            backgroundColor: .clear,
-            selectedBackgroundColor: .clear,
-            unselectedTextAttributes: [:],
-            selectedTextAttributes: [:],
-            bottomLineColor: .black,
-            selectorColor: .black,
-            bottomLineHeight: 0.5,
-            selectorHeight: 2,
-            itemTopPadding: 0,
-            selectorOffsetFromLabel: nil,
-            selectorSpansFullItemWidth: true,
-            labelsOnEndsFloatToEdges: false)
+        // Update the states of all the items
+        assert(viewState.titles.count == items.count, "There was a different number of titles than items. These should always be in sync.")
+        
+        for (index, item) in items.enumerated() {
+            var viewState = item.viewState
+            viewState.title = self.viewState.titles[index]
+            
+            /**
+             If shouldEvenltSpaceItemsHorizontally is set to true, don't add
+             any trailing offset.
+             Or, if that is set ot false, then don't add horizontal trailing
+             offset to the last one, otherwise there is potentially unecessary scrolling.
+             */
+            if self.viewState.shouldEvenlySpaceItemsHorizontally ||
+                index == items.count - 1 {
+                viewState.horizontalTrailingOffset = 0
+            }
+            else {
+                viewState.horizontalTrailingOffset = self.viewState.offsetBetweenTitles
+            }
+            
+            item.viewState = viewState
+        }
+        
+        // Other viewState properties
+        backgroundColor = viewState.backgroundColor
+        
+        // bottom line
+        bottomLineHeightConstraint?.constant = viewState.bottomLineHeight
+        bottomLine.backgroundColor = viewState.bottomLineColor
+        
+        // selector
+        selectorHeightConstraint?.constant = viewState.selectorHeight
+        selector.backgroundColor = viewState.selectorColor
+        
+        selectItem(at: selectedIndex, withAnimation: false)
+        
+        setNeedsLayout()
     }
     
     // MARK: Select
@@ -337,13 +490,33 @@ public class YSSegmentedControl: UIView {
     public func selectItem(at index: Int, withAnimation animation: Bool) {
         self.selectedIndex = index
         moveSelector(at: index, withAnimation: animation)
+        
+        guard index < items.count else {
+            return
+        }
+        
+        // scroll to the selected item if its bounds are out of the scrollview
+        let selectedItemFrame = items[index].frame
+        let scrollViewContentOffsetRightPoint = scrollView.contentOffset.x + scrollView.bounds.size.width
+        let selectedItemFrameRightPoint = selectedItemFrame.origin.x + selectedItemFrame.size.width
+        
+        if selectedItemFrame.origin.x < scrollView.contentOffset.x ||
+            scrollViewContentOffsetRightPoint < selectedItemFrameRightPoint {
+            scrollView.scrollRectToVisible(selectedItemFrame, animated: animation)
+        }
+        
         for item in items {
             if item == items[index] {
-                item.updateLabelAttributes(appearance.selectedTextAttributes)
-                item.backgroundColor = appearance.selectedBackgroundColor
-            } else {
-                item.updateLabelAttributes(appearance.unselectedTextAttributes)
-                item.backgroundColor = appearance.backgroundColor
+                var viewState = item.viewState
+                viewState.titleAttributes = self.viewState.selectedTextAttributes
+                viewState.backgroundColor = self.viewState.selectedBackgroundColor
+                item.viewState = viewState
+            }
+            else {
+                var viewState = item.viewState
+                viewState.titleAttributes = self.viewState.unselectedTextAttributes
+                viewState.backgroundColor = self.viewState.backgroundColor
+                item.viewState = viewState
             }
         }
     }
@@ -353,28 +526,21 @@ public class YSSegmentedControl: UIView {
             return
         }
         
-        layoutIfNeeded()
+        scrollView.layoutIfNeeded()
 
         if let selectorWidthConstraint = selectorWidthConstraint {
-            removeConstraint(selectorWidthConstraint)
+            scrollView.removeConstraint(selectorWidthConstraint)
         }
         if let selectorLeadingConstraint = selectorLeadingConstraint {
-            removeConstraint(selectorLeadingConstraint)
+            scrollView.removeConstraint(selectorLeadingConstraint)
         }
         if let selectorBottomConstraint = selectorBottomConstraint {
-            removeConstraint(selectorBottomConstraint)
+            scrollView.removeConstraint(selectorBottomConstraint)
         }
         
         let item = items[selectedIndex]
         
-        let horizontalConstrainingView: UIView
-        
-        if appearance.selectorSpansFullItemWidth {
-            horizontalConstrainingView = item
-        }
-        else {
-            horizontalConstrainingView = item.label
-        }
+        let horizontalConstrainingView = item.label
         
         selectorLeadingConstraint = NSLayoutConstraint(item: selector,
                                                        attribute: .leading,
@@ -392,7 +558,7 @@ public class YSSegmentedControl: UIView {
                                                      multiplier: 1.0,
                                                      constant: 0)
         
-        if let selectorOffsetFromLabel = appearance.selectorOffsetFromLabel {
+        if let selectorOffsetFromLabel = viewState.selectorOffsetFromLabel {
             selectorBottomConstraint = NSLayoutConstraint(item: selector,
                                                           attribute: .top,
                                                           relatedBy: .equal,
@@ -405,14 +571,14 @@ public class YSSegmentedControl: UIView {
             selectorBottomConstraint = NSLayoutConstraint(item: selector,
                                                           attribute: .bottom,
                                                           relatedBy: .equal,
-                                                          toItem: self,
+                                                          toItem: scrollView,
                                                           attribute: .bottom,
                                                           multiplier: 1.0,
                                                           constant: 0)
         }
         
         
-        addConstraints([selectorWidthConstraint!, selectorLeadingConstraint!, selectorBottomConstraint!])
+        scrollView.addConstraints([selectorWidthConstraint!, selectorLeadingConstraint!, selectorBottomConstraint!])
         
         UIView.animate(withDuration: animation ? 0.3 : 0,
                        delay: 0,
@@ -422,7 +588,7 @@ public class YSSegmentedControl: UIView {
                        animations: {
                         [unowned self] in
                         
-                        self.layoutIfNeeded()
+                        self.scrollView.layoutIfNeeded()
             },
                        completion: nil)
     }

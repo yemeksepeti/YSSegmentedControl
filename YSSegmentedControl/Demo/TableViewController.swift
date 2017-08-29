@@ -16,70 +16,108 @@ class TableViewController: UITableViewController {
     @IBOutlet weak var selectorOffsetFromLabelSwitch: UISwitch!
     @IBOutlet weak var selectorOffsetFromLabelValueLabel: UILabel!
     
-    @IBOutlet weak var labelsOnEndsFloatToEdgesSwitch: UISwitch!
+    @IBOutlet weak var newTitleTextField: UITextField!
+    
+    @IBOutlet weak var offsetBewteenTitlesStepper: UIStepper!
+    @IBOutlet weak var offsetBetweenTitlesValueLabel: UILabel!
+    
+    @IBOutlet weak var bottomLineHeightStepper: UIStepper!
+    @IBOutlet weak var bottomLineHeightValueLabel: UILabel!
+    
+    @IBOutlet weak var shouldEvenlySpaceItemsHorizontallySwitch: UISwitch!
     
     // MARK: Lifecycle
     
-    let segmented = YSSegmentedControl(frame: .zero, titles: [])
+    let segmented = YSSegmentedControl(frame: .zero)
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         segmented.frame = CGRect(x: 0, y: 64, width: view.frame.size.width, height: 44)
-        segmented.titles = ["First", "Second", "Third"]
+        
+        var viewState = segmented.viewState
+        
+        viewState.titles = ["First", "Second", "Third"]
+        viewState.unselectedTextAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 16), NSForegroundColorAttributeName: UIColor.gray]
+        viewState.selectedTextAttributes = [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 16), NSForegroundColorAttributeName: UIColor.black]
+        
+        segmented.viewState = viewState
+        
         segmented.action = { control, index in
             print ("segmented did pressed \(index)")
         }
         
         segmented.delegate = self
-        
-        var appearance = segmented.appearance
-        appearance?.unselectedTextAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 16), NSForegroundColorAttributeName: UIColor.gray]
-        appearance?.selectedTextAttributes = [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 16), NSForegroundColorAttributeName: UIColor.black]
-        segmented.appearance = appearance
 
         navigationItem.titleView = segmented
         
         updateAppearanceConfigurationUI()
     }
     
-    @IBAction func didToggleSelectorSpansFullItemWidthSwitch(_ sender: UISwitch) {
-        var appearance = segmented.appearance
-        appearance?.selectorSpansFullItemWidth = sender.isOn
-        segmented.appearance = appearance
+    // MARK:- Actions
+    
+    @IBAction func didTapResetButton(_ sender: UIButton) {
+        segmented.viewState = YSSegmentedControlViewState()
+        updateAppearanceConfigurationUI()
     }
     
     @IBAction func didToggleSelectorOffsetFromLabelSwitch(_ sender: UISwitch) {
-        var appearance = segmented.appearance
-        appearance?.selectorOffsetFromLabel = sender.isOn ? CGFloat(selectorOffsetFromLabelStepper.value) : nil
-        segmented.appearance = appearance
+        var viewState = segmented.viewState
+        viewState.selectorOffsetFromLabel = sender.isOn ? CGFloat(selectorOffsetFromLabelStepper.value) : nil
+        segmented.viewState = viewState
     }
 
     @IBAction func didChageSelectorOffsetFromlabelStepper(_ sender: UIStepper) {
         selectorOffsetFromLabelSwitch.isOn = true
         selectorOffsetFromLabelValueLabel.text = "\(sender.value)"
         
-        var appearance = segmented.appearance
-        appearance?.selectorOffsetFromLabel = CGFloat(sender.value)
-        segmented.appearance = appearance
-    }
-    
-    @IBAction func didToggleLabelsOnEndsFloatToEdgesSwitch(_ sender: UISwitch) {
-        var appearance = segmented.appearance
-        appearance?.labelsOnEndsFloatToEdges = sender.isOn
-        segmented.appearance = appearance
+        var viewState = segmented.viewState
+        viewState.selectorOffsetFromLabel = CGFloat(sender.value)
+        segmented.viewState = viewState
     }
 
+    @IBAction func didChangeOffsetBetweenTitlesStepper(_ sender: UIStepper) {
+        offsetBetweenTitlesValueLabel.text = "\(sender.value)"
+
+        var viewState = segmented.viewState
+        viewState.offsetBetweenTitles = CGFloat(sender.value)
+        segmented.viewState = viewState
+    }
+    
+    @IBAction func didChangeBottomLineHeigtStepper(_ sender: UIStepper) {
+        guard sender.value > 0 else {
+            return
+        }
+        
+        bottomLineHeightValueLabel.text = "\(sender.value)"
+        
+        var viewState = segmented.viewState
+        viewState.bottomLineHeight = CGFloat(sender.value)
+        segmented.viewState = viewState
+    }
+    
+    @IBAction func didToggleShouldEvenlySpaceItemsHorizontallySwitch(_ sender: UISwitch) {
+        var viewState = segmented.viewState
+        viewState.shouldEvenlySpaceItemsHorizontally = sender.isOn
+        segmented.viewState = viewState
+    }
+    
     // MARK: Helpers
     
     func updateAppearanceConfigurationUI() {
         selectorOffsetFromLabelValueLabel.text = "\(selectorOffsetFromLabelStepper.value)"
         
-        selectorOffsetFromLabelStepper.value = Double(segmented.appearance.selectorOffsetFromLabel ?? 0)
-        selectorOffsetFromLabelSwitch.isOn = segmented.appearance.selectorOffsetFromLabel != nil
+        selectorOffsetFromLabelStepper.value = Double(segmented.viewState.selectorOffsetFromLabel ?? 0)
+        selectorOffsetFromLabelSwitch.isOn = segmented.viewState.selectorOffsetFromLabel != nil
         selectorOffsetFromLabelValueLabel.text = "\(selectorOffsetFromLabelStepper.value)"
         
-        labelsOnEndsFloatToEdgesSwitch.isOn = segmented.appearance.labelsOnEndsFloatToEdges
+        offsetBewteenTitlesStepper.value = Double(segmented.viewState.offsetBetweenTitles)
+        offsetBetweenTitlesValueLabel.text = "\(offsetBewteenTitlesStepper.value)"
+        
+        bottomLineHeightStepper.value = Double(segmented.viewState.bottomLineHeight)
+        bottomLineHeightValueLabel.text = "\(bottomLineHeightStepper.value)"
+        
+        shouldEvenlySpaceItemsHorizontallySwitch.isOn = segmented.viewState.shouldEvenlySpaceItemsHorizontally
     }
 }
 
@@ -90,5 +128,18 @@ extension TableViewController: YSSegmentedControlDelegate {
     
     func segmentedControl(_ segmentedControl: YSSegmentedControl, didPressItemAt index: Int) {
         print ("[Delegate] segmented did press \(index)")
+    }
+}
+
+extension TableViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+
+        var viewState = segmented.viewState
+        viewState.titles.append(textField.text ?? "")
+        segmented.viewState = viewState
+
+        textField.text = ""
+        return true
     }
 }
