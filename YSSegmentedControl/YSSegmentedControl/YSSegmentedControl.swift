@@ -221,6 +221,12 @@ public class YSSegmentedControl: UIView {
     
     private var items = [YSSegmentedControlItem]()
     
+    /**
+     Array of all spacer views that are used to evenly space out the items
+     when shouldEvenlySpaceItemsHorizontally is set to true.
+     */
+    private var spacerViews = [UIView]()
+    
     private var scrollView = UIScrollView()
     
     private var selector = UIView()
@@ -232,6 +238,16 @@ public class YSSegmentedControl: UIView {
     fileprivate var selectorLeadingConstraint: NSLayoutConstraint?
     fileprivate var selectorWidthConstraint: NSLayoutConstraint?
     fileprivate var selectorBottomConstraint: NSLayoutConstraint?
+    
+    /**
+     A view to horizontally constrain the scrollView to have
+     equal width to its superview.
+     
+     This is used when shouldEvenlySpaceItemsHorizontally is set to true
+     so that the width of the scrollView is fixed so that we can add
+     horizontal spacer views.
+     */
+    fileprivate let horizontalScrollViewConstrainingView = UIView()
     
     // MARK:- Init
     
@@ -327,7 +343,24 @@ public class YSSegmentedControl: UIView {
             scrollView.addSubview(item)
             items.append(item)
         }
-        
+
+        if viewState.shouldEvenlySpaceItemsHorizontally {
+            scrollView.addSubview(horizontalScrollViewConstrainingView)
+            
+            _ = horizontalScrollViewConstrainingView.makeConstraint(for: .height, equalTo: 0)
+            
+            addConstraint(NSLayoutConstraint(item: horizontalScrollViewConstrainingView,
+                                             attribute: .width,
+                                             relatedBy: .equal,
+                                             toItem: self,
+                                             attribute: .width,
+                                             multiplier: 1.0,
+                                             constant: 0.0))
+            
+            horizontalScrollViewConstrainingView.makeAttributesEqualToSuperview([.top])
+            horizontalScrollViewConstrainingView.makeAttributesEqualToSuperview([.leading, .trailing])
+        }
+
         // Constrain all the items
         for (index, item) in items.enumerated() {
             item.translatesAutoresizingMaskIntoConstraints = false
@@ -341,8 +374,35 @@ public class YSSegmentedControl: UIView {
             // Middle or last
             else {
                 let previousItem = items[index - 1]
-                item.makeAttribute(.leading, equalToOtherView: previousItem, attribute: .trailing)
+                
+                if viewState.shouldEvenlySpaceItemsHorizontally {
+                    let newSpacerView = UIView()
+                    newSpacerView.translatesAutoresizingMaskIntoConstraints = false
+                    scrollView.addSubview(newSpacerView)
+                    spacerViews.append(newSpacerView)
+                    
+                    newSpacerView.makeAttribute(.leading, equalToOtherView: previousItem, attribute: .trailing)
+                    newSpacerView.makeAttribute(.trailing, equalToOtherView: item, attribute: .leading)
+                    _ = newSpacerView.makeConstraint(for: .height, equalTo: 0)
+                    newSpacerView.makeAttribute(.centerY, equalToOtherView: previousItem, attribute: .centerY)
+                    scrollView.addConstraint(NSLayoutConstraint(item: newSpacerView,
+                                                                attribute: .width,
+                                                                relatedBy: .greaterThanOrEqual,
+                                                                toItem: nil,
+                                                                attribute: .notAnAttribute,
+                                                                multiplier: 1.0,
+                                                                constant: 10))
+                    
+                    if spacerViews.count > 1 {
+                        let previousSpacerView = spacerViews[spacerViews.count - 2]
+                        newSpacerView.makeAttribute(.width, equalToOtherView: previousSpacerView, attribute: .width)
+                    }
+                }
+                else {
+                    item.makeAttribute(.leading, equalToOtherView: previousItem, attribute: .trailing)
+                }
             }
+            
             // Last
             if index == items.count - 1 {
                 item.makeAttributesEqualToSuperview([.trailing])
@@ -361,9 +421,13 @@ public class YSSegmentedControl: UIView {
         // If the number of titles have changed, re-add all of the items.
         if oldViewState.titles.count != viewState.titles.count ||
             oldViewState.shouldEvenlySpaceItemsHorizontally != viewState.shouldEvenlySpaceItemsHorizontally {
+            
             // Remove all items
             items.forEach { $0.removeFromSuperview() }
             items.removeAll()
+            spacerViews.forEach { $0.removeFromSuperview() }
+            spacerViews.removeAll()
+            horizontalScrollViewConstrainingView.removeFromSuperview()
             
             layoutItems()
             
@@ -383,7 +447,8 @@ public class YSSegmentedControl: UIView {
             
             // Don't add horizontal trailing offset to the last one,
             // otherwise there is unecessary scrolling.
-            if index == items.count - 1 {
+            if self.viewState.shouldEvenlySpaceItemsHorizontally ||
+                index == items.count - 1 {
                 viewState.horizontalTrailingOffset = 0
             }
             else {
