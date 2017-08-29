@@ -313,6 +313,18 @@ public class YSSegmentedControl: UIView {
     // MARK:- ViewState
     
     /**
+     Removes all the items and their associated views (such as spacer views
+     and other constraining views) from the scrollView.
+     */
+    private func removeItemsAndAssociatedViews() {
+        items.forEach { $0.removeFromSuperview() }
+        items.removeAll()
+        spacerViews.forEach { $0.removeFromSuperview() }
+        spacerViews.removeAll()
+        horizontalScrollViewConstrainingView.removeFromSuperview()
+    }
+    
+    /**
      Lays out all of the YSSegmentedControlItems by adding them to the subview,
      and then constrainign them properly based on the state).
      */
@@ -423,12 +435,7 @@ public class YSSegmentedControl: UIView {
             oldViewState.shouldEvenlySpaceItemsHorizontally != viewState.shouldEvenlySpaceItemsHorizontally {
             
             // Remove all items
-            items.forEach { $0.removeFromSuperview() }
-            items.removeAll()
-            spacerViews.forEach { $0.removeFromSuperview() }
-            spacerViews.removeAll()
-            horizontalScrollViewConstrainingView.removeFromSuperview()
-            
+            removeItemsAndAssociatedViews()
             layoutItems()
             
             // If titles have been removed such the selectedIndex is out of
