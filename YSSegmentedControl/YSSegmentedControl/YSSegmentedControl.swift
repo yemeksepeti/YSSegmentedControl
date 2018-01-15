@@ -171,7 +171,7 @@ public class YSSegmentedControl: UIView {
     
     // MARK: Properties
     
-    weak var delegate: YSSegmentedControlDelegate?
+    public weak var delegate: YSSegmentedControlDelegate?
     public var action: YSSegmentedControlAction?
     
     private var selectedIndex = 0
