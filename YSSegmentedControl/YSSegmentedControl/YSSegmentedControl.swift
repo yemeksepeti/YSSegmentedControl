@@ -322,8 +322,10 @@ public class YSSegmentedControl: UIView {
             selectedBackgroundColor: .clear,
             unselectedTextAttributes: [:],
             selectedTextAttributes: [:],
-            bottomLineColor: .black,
-            selectorColor: .black,
+            bottomLineColor: UIColor(red: 23.0/255.0, green:
+                119.0/255.0, blue: 203.0/255.0, alpha: 1.0),
+            selectorColor: UIColor(red: 23.0/255.0, green:
+                119.0/255.0, blue: 203.0/255.0, alpha: 1.0),
             bottomLineHeight: 0.5,
             selectorHeight: 2,
             itemTopPadding: 0,
