@@ -320,14 +320,14 @@ public class YSSegmentedControl: UIView {
         appearance = YSSegmentedControlAppearance(
             backgroundColor: .clear,
             selectedBackgroundColor: .clear,
-            unselectedTextAttributes: [:],
-            selectedTextAttributes: [:],
-            bottomLineColor: UIColor(red: 23.0/255.0, green:
-                119.0/255.0, blue: 203.0/255.0, alpha: 1.0),
+            unselectedTextAttributes: [NSFontAttributeName: UIFont(name: "Avenir-Medium", size: 16)!, NSForegroundColorAttributeName: UIColor(red: 74/255.0, green: 74/255.0, blue: 74/255.0, alpha: 1.0)],
+            selectedTextAttributes: [NSFontAttributeName: UIFont(name: "Avenir-Medium", size: 16)!, NSForegroundColorAttributeName: UIColor(red: 23.0/255.0, green:
+                119.0/255.0, blue: 203.0/255.0, alpha: 1.0)],
+            bottomLineColor: UIColor(red: 174/255.0, green: 174/255.0, blue: 174/255.0, alpha: 1.0),
             selectorColor: UIColor(red: 23.0/255.0, green:
                 119.0/255.0, blue: 203.0/255.0, alpha: 1.0),
             bottomLineHeight: 0.5,
-            selectorHeight: 2,
+            selectorHeight: 3.2,
             itemTopPadding: 0,
             selectorOffsetFromLabel: nil,
             selectorSpansFullItemWidth: true,
