@@ -38,8 +38,8 @@ class TableViewController: UITableViewController {
         var viewState = segmented.viewState
         
         viewState.titles = ["First", "Second", "Third"]
-        viewState.unselectedTextAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 16), NSForegroundColorAttributeName: UIColor.gray]
-        viewState.selectedTextAttributes = [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 16), NSForegroundColorAttributeName: UIColor.black]
+        viewState.unselectedTextAttributes = [.font: UIFont.systemFont(ofSize: 16), .foregroundColor: UIColor.gray]
+        viewState.selectedTextAttributes = [.font: UIFont.boldSystemFont(ofSize: 16), .foregroundColor: UIColor.black]
         
         segmented.viewState = viewState
         
