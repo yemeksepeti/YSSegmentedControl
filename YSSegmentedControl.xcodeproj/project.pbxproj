@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03F2EC9B1F4F435F000AD869 /* UIView+AutoLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F2EC9A1F4F435F000AD869 /* UIView+AutoLayout.swift */; };
 		B28BBFB11BF24CB30064F127 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28BBFA61BF24CB30064F127 /* TableViewController.swift */; };
 		B28BBFB21BF24CB30064F127 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28BBFA81BF24CB30064F127 /* AppDelegate.swift */; };
 		B28BBFB31BF24CB30064F127 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B28BBFA91BF24CB30064F127 /* LaunchScreen.xib */; };
@@ -27,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		03F2EC9A1F4F435F000AD869 /* UIView+AutoLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+AutoLayout.swift"; sourceTree = "<group>"; };
 		B28BBFA61BF24CB30064F127 /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		B28BBFA81BF24CB30064F127 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B28BBFAA1BF24CB30064F127 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -82,6 +84,7 @@
 			isa = PBXGroup;
 			children = (
 				B28BBFB01BF24CB30064F127 /* YSSegmentedControl.swift */,
+				03F2EC9A1F4F435F000AD869 /* UIView+AutoLayout.swift */,
 			);
 			path = YSSegmentedControl;
 			sourceTree = "<group>";
@@ -234,6 +237,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B28BBFB21BF24CB30064F127 /* AppDelegate.swift in Sources */,
+				03F2EC9B1F4F435F000AD869 /* UIView+AutoLayout.swift in Sources */,
 				B28BBFB11BF24CB30064F127 /* TableViewController.swift in Sources */,
 				B28BBFB71BF24CB30064F127 /* YSSegmentedControl.swift in Sources */,
 			);
@@ -376,6 +380,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.questa.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -387,6 +392,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.questa.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
