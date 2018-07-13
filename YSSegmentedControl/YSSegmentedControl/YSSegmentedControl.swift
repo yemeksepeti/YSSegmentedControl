@@ -56,6 +56,12 @@ public struct YSSegmentedControlViewState {
     public var shouldEvenlySpaceItemsHorizontally: Bool
     
     /**
+     Whether or not the selector should be the same size as the item text,
+     or a proportion of the screen
+     */
+    public var shouldSelectorBeSameWidthAsText: Bool
+    
+    /**
      The titles that show inside the segmented control.
      */
     public var titles: [String]
@@ -73,6 +79,7 @@ public struct YSSegmentedControlViewState {
         selectorOffsetFromLabel = nil
         offsetBetweenTitles = 48
         shouldEvenlySpaceItemsHorizontally = false
+        shouldSelectorBeSameWidthAsText = false
         titles = []
     }
 }
