@@ -143,6 +143,7 @@ class YSSegmentedControlItem: UIControl {
     }
     
     private func commonInit() {
+        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)
         
