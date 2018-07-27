@@ -14,8 +14,8 @@ public struct YSSegmentedControlAppearance {
     public var backgroundColor: UIColor
     public var selectedBackgroundColor: UIColor
     
-    public var unselectedTextAttributes: [String : Any]
-    public var selectedTextAttributes: [String : Any]
+    public var unselectedTextAttributes: [NSAttributedStringKey : Any]
+    public var selectedTextAttributes: [NSAttributedStringKey : Any]
     
     public var bottomLineColor: UIColor
     public var selectorColor: UIColor
@@ -137,7 +137,7 @@ class YSSegmentedControlItem: UIControl {
     
     // MARK: UI Helpers
     
-    func updateLabelAttributes(_ attributes: [String : Any]) {
+    func updateLabelAttributes(_ attributes: [NSAttributedStringKey : Any]) {
         guard let labelText = label.text else {
             return
         }
