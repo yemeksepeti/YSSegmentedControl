@@ -160,7 +160,7 @@ class YSSegmentedControlItem: UIControl {
 
 // MARK: - Control
 
-public protocol YSSegmentedControlDelegate: class {
+@objc public protocol YSSegmentedControlDelegate: NSObjectProtocol {
     func segmentedControl(_ segmentedControl: YSSegmentedControl, willPressItemAt index: Int)
     func segmentedControl(_ segmentedControl: YSSegmentedControl, didPressItemAt index: Int)
 }
@@ -171,7 +171,7 @@ public class YSSegmentedControl: UIView {
     
     // MARK: Properties
     
-    weak var delegate: YSSegmentedControlDelegate?
+    @IBOutlet public weak var delegate: YSSegmentedControlDelegate?
     public var action: YSSegmentedControlAction?
     
     private var selectedIndex = 0
