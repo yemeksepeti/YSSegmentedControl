@@ -174,7 +174,7 @@ public class YSSegmentedControl: UIView {
     @IBOutlet public weak var delegate: YSSegmentedControlDelegate?
     public var action: YSSegmentedControlAction?
     
-    private var selectedIndex = 0
+    private(set) var selectedIndex = 0
     
     public var appearance: YSSegmentedControlAppearance! {
         didSet {
