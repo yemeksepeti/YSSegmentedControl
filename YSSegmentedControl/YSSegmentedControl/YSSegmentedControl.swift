@@ -289,7 +289,7 @@ public class YSSegmentedControl: UIView {
                                          multiplier: 1.0,
                                          constant: appearance.selectorHeight))
         
-        selectItem(at: selectedIndex, withAnimation: true)
+        selectItem(at: selectedIndex, withAnimation: false)
         
         setNeedsLayout()
     }
