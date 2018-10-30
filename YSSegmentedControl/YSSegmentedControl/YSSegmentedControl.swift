@@ -14,8 +14,8 @@ public struct YSSegmentedControlAppearance {
     public var backgroundColor: UIColor
     public var selectedBackgroundColor: UIColor
     
-    public var unselectedTextAttributes: [NSAttributedStringKey : Any]
-    public var selectedTextAttributes: [NSAttributedStringKey : Any]
+    public var unselectedTextAttributes: [NSAttributedString.Key : Any]
+    public var selectedTextAttributes: [NSAttributedString.Key : Any]
     
     public var bottomLineColor: UIColor
     public var selectorColor: UIColor
@@ -97,7 +97,7 @@ class YSSegmentedControlItem: UIControl {
         label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)
         
-        let attribute: NSLayoutAttribute
+        let attribute: NSLayoutConstraint.Attribute
         
         switch labelAlignment {
         case .left:
@@ -137,7 +137,7 @@ class YSSegmentedControlItem: UIControl {
     
     // MARK: UI Helpers
     
-    func updateLabelAttributes(_ attributes: [NSAttributedStringKey : Any]) {
+    func updateLabelAttributes(_ attributes: [NSAttributedString.Key : Any]) {
         guard let labelText = label.text else {
             return
         }
