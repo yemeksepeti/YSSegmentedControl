@@ -182,9 +182,11 @@
 				TargetAttributes = {
 					B2A0ED061AE790290035992E = {
 						CreatedOnToolsVersion = 6.3;
+						LastSwiftMigration = 0940;
 					};
 					B2A0ED1B1AE790290035992E = {
 						CreatedOnToolsVersion = 6.3;
+						LastSwiftMigration = 0940;
 						TestTargetID = B2A0ED061AE790290035992E;
 					};
 				};
@@ -376,6 +378,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.questa.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -387,6 +391,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.questa.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -405,6 +411,8 @@
 				INFOPLIST_FILE = YSSegmentedControlTests/SupportingFiles/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/YSSegmentedControl.app/YSSegmentedControl";
 			};
 			name = Debug;
@@ -420,6 +428,8 @@
 				INFOPLIST_FILE = YSSegmentedControlTests/SupportingFiles/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/YSSegmentedControl.app/YSSegmentedControl";
 			};
 			name = Release;

@@ -14,8 +14,8 @@ public struct YSSegmentedControlAppearance {
     public var backgroundColor: UIColor
     public var selectedBackgroundColor: UIColor
     
-    public var unselectedTextAttributes: [String : Any]
-    public var selectedTextAttributes: [String : Any]
+    public var unselectedTextAttributes: [NSAttributedString.Key : Any]
+    public var selectedTextAttributes: [NSAttributedString.Key : Any]
     
     public var bottomLineColor: UIColor
     public var selectorColor: UIColor
@@ -97,7 +97,7 @@ class YSSegmentedControlItem: UIControl {
         label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)
         
-        let attribute: NSLayoutAttribute
+        let attribute: NSLayoutConstraint.Attribute
         
         switch labelAlignment {
         case .left:
@@ -137,7 +137,7 @@ class YSSegmentedControlItem: UIControl {
     
     // MARK: UI Helpers
     
-    func updateLabelAttributes(_ attributes: [String : Any]) {
+    func updateLabelAttributes(_ attributes: [NSAttributedString.Key : Any]) {
         guard let labelText = label.text else {
             return
         }
@@ -160,7 +160,7 @@ class YSSegmentedControlItem: UIControl {
 
 // MARK: - Control
 
-public protocol YSSegmentedControlDelegate: class {
+@objc public protocol YSSegmentedControlDelegate: NSObjectProtocol {
     func segmentedControl(_ segmentedControl: YSSegmentedControl, willPressItemAt index: Int)
     func segmentedControl(_ segmentedControl: YSSegmentedControl, didPressItemAt index: Int)
 }
@@ -171,10 +171,10 @@ public class YSSegmentedControl: UIView {
     
     // MARK: Properties
     
-    weak var delegate: YSSegmentedControlDelegate?
+    @IBOutlet public weak var delegate: YSSegmentedControlDelegate?
     public var action: YSSegmentedControlAction?
     
-    private var selectedIndex = 0
+    public private(set) var selectedIndex = 0
     
     public var appearance: YSSegmentedControlAppearance! {
         didSet {
@@ -289,7 +289,7 @@ public class YSSegmentedControl: UIView {
                                          multiplier: 1.0,
                                          constant: appearance.selectorHeight))
         
-        selectItem(at: selectedIndex, withAnimation: true)
+        selectItem(at: selectedIndex, withAnimation: false)
         
         setNeedsLayout()
     }
